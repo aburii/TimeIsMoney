@@ -1,0 +1,36 @@
+# docker-compose.yml
+
+version: "3.8"
+
+services:
+
+  db:
+    image: postgres:14-alpine
+    ports:
+      - 5432:5432
+    env_file:
+      - .env
+    networks:
+      - db-network
+
+  back:
+    build: ./apps/back
+    depends_on:
+      - db
+    ports:
+      - 4000:3000
+    networks:
+      - back-network
+      - db-network
+
+  front:
+    build: ./apps/front
+    ports:
+      - 3000:3000
+    networks:
+      - back-network
+
+
+networks:
+  back-network:
+  db-network:
