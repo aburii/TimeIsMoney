@@ -18,6 +18,8 @@ Represents an application user.
 
 | Field               | Type                                        | Example                          |
 | ------------------- | ------------------------------------------- | -------------------------------- |
+| firstname           | str                                         | haleig                           |
+| lastname            | str                                         | schumm                           |
 | nickname            | str                                         | haleigh.schumm                   |
 | email               | str                                         | haleigh.schumm@adell.biz         |
 | password_hash       | str                                         | //                               |

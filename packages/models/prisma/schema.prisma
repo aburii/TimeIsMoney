@@ -9,3 +9,45 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  firstname     String
+  lastname      String
+  nickname      String
+  email         String   @unique
+  pressKeywords String[] @default([])
+
+  default_currency         Currency                 @relation(fields: [currencyId], references: [id], onDelete: NoAction)
+  followedCryptoCurrencies UserFollowedCurrencies[]
+  currencyId               Int
+}
+
+model Currency {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name      String
+  symbol    String  @unique
+  api_id    String  @unique
+  is_crypto Boolean
+  image_url String?
+
+  followers UserFollowedCurrencies[]
+  User      User[]
+}
+
+model UserFollowedCurrencies {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  currency   Currency @relation(fields: [currencyId], references: [id], onDelete: Cascade)
+  userId     Int
+  currencyId Int
+}

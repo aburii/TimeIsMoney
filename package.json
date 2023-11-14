@@ -4,7 +4,9 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "reset_db": "npx prisma db push --force-reset",
+    "migrate_db": "npx prisma migrate dev --name init"
   },
   "devDependencies": {
     "eslint": "^8.48.0",
@@ -17,5 +19,8 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "prisma": {
+    "schema": "packages/models/prisma/schema.prisma"
+  }
 }
