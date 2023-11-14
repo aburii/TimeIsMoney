@@ -1,0 +1,9 @@
+{
+  "extends": "@timeismoney/tsconfig/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src"],
+  "exclude": ["dist", "build", "node_modules"]
+}
