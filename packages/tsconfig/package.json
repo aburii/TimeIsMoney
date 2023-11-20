@@ -1,0 +1,10 @@
+{
+  "name": "@timeismoney/tsconfig",
+  "version": "1.0.0",
+  "private": true,
+  "license": "ISC",
+  "main": "index.js",
+  "files": [
+    "base.json"
+  ]
+}
