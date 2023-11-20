@@ -16,5 +16,3 @@
     </HomeCustomBox>
   </section>
 </template>
-
-<script setup></script>
