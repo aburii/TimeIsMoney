@@ -27,6 +27,9 @@
           <li><NuxtLink to="/news">News</NuxtLink></li>
         </ul>
       </div>
+      <NuxtLink to="/" class="btn btn-ghost text-xl">
+        <img src="@/assets/img/logo.png" class="max-w-[40px]" />
+      </NuxtLink>
       <NuxtLink to="/" class="btn btn-ghost text-xl hidden lg:flex">
         <img src="@/assets/img/logo.png" class="max-w-[40px]" />
         <p>The Count Of Money</p>
