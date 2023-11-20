@@ -41,3 +41,12 @@ defineProps<{
     </tbody>
   </table>
 </template>
+<style lang="scss" scoped>
+tbody {
+  tr {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+</style>
