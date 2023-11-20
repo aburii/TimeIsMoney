@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar bg-base-100">
+  <header class="navbar bg-base-100 px-12">
     <div class="navbar-start">
       <div class="dropdown">
         <label tabindex="0" class="btn btn-ghost lg:hidden">
@@ -29,7 +29,7 @@
       </div>
       <NuxtLink to="/" class="btn btn-ghost text-xl">
         <img src="@/assets/img/logo.png" class="max-w-[40px]" />
-        <!-- <p>The Count Of Money</p> -->
+        <p>The Count Of Money</p>
       </NuxtLink>
     </div>
     <div class="navbar-end">
@@ -78,11 +78,7 @@
       </div>
       <NuxtLink to="/login" class="btn">Login</NuxtLink>
     </div>
-  </div>
-  <currencySelector
-    v-if="isCurrencySelectorVisible"
-    @close="toggleCurrencySelector"
-  />
+  </header>
 </template>
 
 <script>
