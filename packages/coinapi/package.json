@@ -1,0 +1,17 @@
+{
+  "name": "@timeismoney/coinapi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/index.js",
+  "types": "./src/index.ts",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@timeismoney/tsconfig": "*",
+    "eslint-config-custom": "*",
+    "typescript": "^5.2.2"
+  }
+}
