@@ -27,19 +27,22 @@
           <li><a>News</a></li>
         </ul>
       </div>
-      <a class="btn btn-ghost text-xl">TheCountOfMoney</a>
+      <NuxtLink to="/" class="btn btn-ghost text-xl">
+        <img src="@/assets/img/logo.png" class="max-w-[40px]">
+        <p>The Count Of Money</p>
+      </NuxtLink>
     </div>
     <div class="navbar-end">
       <div class="hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
-          <li><a>Home</a></li>
-          <li><a>Crypto</a></li>
-          <li><a>News</a></li>
+          <li><NuxtLink to="/">Home</NuxtLink></li>
+          <li><NuxtLink to="/">Crypto</NuxtLink></li>
+          <li><NuxtLink to="/">News</NuxtLink></li>
         </ul>
         <div class="divider lg:divider-horizontal"></div>
       </div>
 
-      <a class="btn">Login</a>
+      <NuxtLink to="/" class="btn">Login</NuxtLink>
     </div>
   </div>
 </template>
