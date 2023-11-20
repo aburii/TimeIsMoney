@@ -1,3 +1,3 @@
 <template>
-<p>features detail</p>
+<p>features detail section</p>
 </template>
