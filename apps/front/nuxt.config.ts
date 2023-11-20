@@ -2,6 +2,8 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
 
+  modules: ["@timeismoney/ui-components/nuxt"],
+
   css: ["@/assets/scss/main.scss"],
 
   postcss: {

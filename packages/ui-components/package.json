@@ -1,0 +1,21 @@
+{
+  "name": "@timeismoney/ui-components",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "nuxt.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "nuxt build",
+    "generate": "nuxt generate"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@nuxt/kit": "^3.8.1"
+  },
+  "devDependencies": {
+    "nuxt": "^3.8.1",
+    "vue": "^3.3.8"
+  }
+}
