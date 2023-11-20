@@ -32,7 +32,6 @@
     </div>
   </section>
 </template>
-
 <style scoped>
 @media screen and (max-width: 480px) {
   .img-container {
