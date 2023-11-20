@@ -1,3 +1,3 @@
 <template>
-<p>mentions</p>
+  <p>mentions</p>
 </template>
