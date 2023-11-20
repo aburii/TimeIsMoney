@@ -42,7 +42,7 @@
         <div class="divider lg:divider-horizontal"></div>
       </div>
 
-      <NuxtLink to="/" class="btn">Login</NuxtLink>
+      <NuxtLink to="/login" class="btn">Login</NuxtLink>
     </div>
   </div>
 </template>
