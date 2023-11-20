@@ -1,17 +1,9 @@
-<script setup lang="ts">
-interface ITableHeading {
-  key: string;
-  label: string;
-}
+<script setup lang="ts" generic="T">
+import type { UIDataTable } from "~/types/ui-table";
 
-type ITableData = { [key: string]: string | number | boolean | Date };
-
-interface IAppTable {
-  heading: ITableHeading[];
-  data: ITableData[];
-}
 defineProps<{
-  tableData: IAppTable;
+  id: string;
+  tableData: UIDataTable<T>;
 }>();
 </script>
 
@@ -19,21 +11,33 @@ defineProps<{
   <table>
     <thead>
       <tr>
-        <th></th>
+        <th v-for="heading in tableData.heading" :key="heading.key">
+          {{ heading.label }}
+        </th>
+        <th>Actions</th>
       </tr>
     </thead>
-    <tbody>
-    <tr v-for="">
-        <td></td>
-        <td><slot name="actions"/></td>
+    <tbody v-if="tableData.data.length > 0">
+      <tr
+        v-for="(data, index) in tableData.data"
+        :key="`${id}-row-${index}`"
+        class="hover"
+      >
+        <td
+          v-for="heading in tableData.heading"
+          :key="`${id}-${index}-${heading.key}`"
+        >
+          <slot :name="heading.key" :data="data" />
+        </td>
+        <td>
+          <slot name="actions" />
+        </td>
+      </tr>
+    </tbody>
+    <tbody v-else>
+      <tr>
+        <td colspan="99" class="text-center">Aucune données</td>
       </tr>
     </tbody>
   </table>
-  <AppTable table-data="dsjfsd" >
-    <template #data="document">
-      {{ document.id }}
-    </template>
-  </AppTable>
 </template>
-
-<style scoped lang="scss"></style>
