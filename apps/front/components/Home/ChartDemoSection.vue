@@ -1,3 +1,3 @@
 <template>
-<p>chart demo</p>
+  <p>chart demo</p>
 </template>

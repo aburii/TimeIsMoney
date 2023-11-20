@@ -1,3 +1,3 @@
 <template>
-<p>stat</p>
+  <p>stat</p>
 </template>
