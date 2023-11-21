@@ -19,6 +19,7 @@ model User {
   lastname      String
   nickname      String
   email         String   @unique
+  
   pressKeywords String[] @default([])
 
   default_currency         Currency                 @relation(fields: [currencyId], references: [id], onDelete: NoAction)
