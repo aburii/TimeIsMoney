@@ -1,5 +1,5 @@
 {
-  "name": "@timeismoney/front",
+  "name": "@timeismoney/bo",
   "private": true,
   "type": "module",
   "scripts": {
@@ -15,10 +15,9 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "autoprefixer": "^10.4.16",
-    "daisyui": "^4.0.3",
-    "nuxt": "^3.8.1",
+    "daisyui": "^4.4.2",
+    "nuxt": "^3.8.2",
     "postcss": "^8.4.31",
-    "sass": "^1.69.5",
     "tailwindcss": "^3.3.5",
     "vue": "^3.3.8",
     "vue-router": "^4.2.5"
