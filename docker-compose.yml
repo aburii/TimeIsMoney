@@ -30,6 +30,13 @@ services:
     networks:
       - back-network
 
+  bo:
+    build: ./apps/bo
+    ports:
+      - 3001:3001
+    networks:
+      - back-network
+
 
 networks:
   back-network:
