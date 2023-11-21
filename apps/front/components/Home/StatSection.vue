@@ -1,6 +1,6 @@
 <template>
   <section
-    class="stat-container flex flex-wrap md:flex-row py-4 justify-center p-4 items-center self-stretch gap-12"
+    class="flex flex-wrap md:flex-row py-4 justify-center p-4 items-center self-stretch gap-12"
   >
     <HomeCustomBox :color="customColor1">
       <p>783</p>
