@@ -5,6 +5,7 @@ import { PrismaCrudModule } from 'nestjs-prisma-crud';
 import { PrismaService } from '@timeismoney/models';
 import { UserModule } from './user/user.module';
 import { CurrencyModule } from './currency/currency.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { CurrencyModule } from './currency/currency.module';
     }),
     UserModule,
     CurrencyModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
