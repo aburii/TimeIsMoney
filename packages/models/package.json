@@ -7,7 +7,9 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "reset_db": "npx prisma db push --force-reset",
+    "migrate_db": "npx prisma migrate dev --name init"
   },
   "dependencies": {
     "@nestjs/common": "^10.2.8",

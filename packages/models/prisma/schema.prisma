@@ -15,11 +15,13 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  firstname     String
-  lastname      String
-  nickname      String
-  email         String   @unique
-  
+  firstname String
+  lastname  String
+  nickname  String
+  email     String @unique
+  password  String
+  refresh   String
+
   pressKeywords String[] @default([])
 
   default_currency         Currency                 @relation(fields: [currencyId], references: [id], onDelete: NoAction)

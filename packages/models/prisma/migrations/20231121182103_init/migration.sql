@@ -7,6 +7,8 @@ CREATE TABLE "User" (
     "lastname" TEXT NOT NULL,
     "nickname" TEXT NOT NULL,
     "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "refresh" TEXT NOT NULL,
     "pressKeywords" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "currencyId" INTEGER NOT NULL,
 
