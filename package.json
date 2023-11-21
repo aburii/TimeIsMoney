@@ -6,7 +6,8 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "reset_db": "npx prisma db push --force-reset",
-    "migrate_db": "npx prisma migrate dev --name init"
+    "migrate_db": "npx prisma migrate dev --name init",
+    "generate": "turbo run generate"
   },
   "devDependencies": {
     "eslint": "^8.48.0",
