@@ -10,9 +10,7 @@
         les mouvements du marché pour une prise de décision avisée.
       </p>
     </div>
-    <div
-      class="stat-container flex flex-wrap items-center justify-center self-stretch gap-12"
-    >
+    <div class="flex flex-wrap items-center justify-center self-stretch gap-12">
       <HomeCustomBigBox :color="customColor1">
         <img class="h-full" src="@/assets/img/chart1.png" alt="crypto" />
       </HomeCustomBigBox>
