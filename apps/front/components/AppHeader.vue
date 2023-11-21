@@ -1,5 +1,5 @@
 <template>
-  <header class="navbar bg-base-100 px-12">
+  <header class="navbar bg-base-100 lg:px-12">
     <div class="navbar-start">
       <div class="dropdown">
         <label tabindex="0" class="btn btn-ghost lg:hidden">
@@ -27,11 +27,14 @@
           <li><NuxtLink to="/">News</NuxtLink></li>
         </ul>
       </div>
-      <NuxtLink to="/" class="btn btn-ghost text-xl">
+      <NuxtLink to="/" class="btn btn-ghost text-xl hidden lg:flex">
         <img src="@/assets/img/logo.png" class="max-w-[40px]" />
         <p>The Count Of Money</p>
       </NuxtLink>
     </div>
+    <NuxtLink to="/" class="btn btn-ghost text-xl lg:hidden">
+      <img src="@/assets/img/logo.png" class="max-w-[40px]" />
+    </NuxtLink>
     <div class="navbar-end">
       <div class="hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
