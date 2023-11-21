@@ -1,16 +1,16 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
   Query,
 } from '@nestjs/common';
 import { CurrencyService } from './currency.service';
-import { CreateCurrencyDto } from './dto/create-currency.dto';
-import { UpdateCurrencyDto } from './dto/update-currency.dto';
+import { CreateCurrencyDto } from '@timeismoney/dto/dist/currency/create-currency.dto';
+import { UpdateCurrencyDto } from '@timeismoney/dto/dist/currency/update-currency.dto';
 
 @Controller('currencies')
 export class CurrencyController {
@@ -21,16 +21,14 @@ export class CurrencyController {
     @Body() createCurrencyDto: CreateCurrencyDto,
     @Query('crudQuery') crudQuery: string,
   ) {
-    const created = await this.currencyService.create(createCurrencyDto, {
+    return await this.currencyService.create(createCurrencyDto, {
       crudQuery,
     });
-    return created;
   }
 
   @Get()
   async findMany(@Query('crudQuery') crudQuery: string) {
-    const matches = await this.currencyService.findMany({ crudQuery });
-    return matches;
+    return await this.currencyService.findMany({ crudQuery });
   }
 
   @Get(':id')
@@ -38,8 +36,7 @@ export class CurrencyController {
     @Param('id') id: string,
     @Query('crudQuery') crudQuery: string,
   ) {
-    const match = await this.currencyService.findOne(id, { crudQuery });
-    return match;
+    return await this.currencyService.findOne(id, { crudQuery });
   }
 
   @Patch(':id')
@@ -48,10 +45,9 @@ export class CurrencyController {
     @Body() updateCurrencyDto: UpdateCurrencyDto,
     @Query('crudQuery') crudQuery: string,
   ) {
-    const updated = await this.currencyService.update(id, updateCurrencyDto, {
+    return await this.currencyService.update(id, updateCurrencyDto, {
       crudQuery,
     });
-    return updated;
   }
 
   @Delete(':id')

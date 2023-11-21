@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaService } from '@timeismoney/models';
+import { PrismaService } from '@timeismoney/models/dist';
 import bcrypt from 'bcrypt';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class AuthService {
   async signUp(data) {
     const hashedPassword = await bcrypt.hash(data.password, 10);
     try {
-      const user = await this.prismaService.user.create({
+      return await this.prismaService.user.create({
         data: {
           lastname: data.lastname,
           firstname: data.firstname,
@@ -26,7 +26,6 @@ export class AuthService {
           },
         },
       });
-      return user;
     } catch (error) {
       throw new ForbiddenException('Email already exists');
     }
