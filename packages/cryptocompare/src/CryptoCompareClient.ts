@@ -33,6 +33,12 @@ export class CryptoCompareClient {
     });
   }
 
+  private async fetchRawApi<DataType>(url: string): Promise<DataType> {
+    return this.fetchJSON(url).then((body) => {
+      return body as DataType;
+    });
+  }
+
   private objectToUrlSearchParams(obj: any): URLSearchParams {
     const params = new URLSearchParams();
     for (const property in obj) {
@@ -72,6 +78,21 @@ export class CryptoCompareClient {
     );
   }
 
+  async coinFullData(params: {
+    fsyms: string[];
+    tsyms: string[];
+    // Default: true
+    tryConversion?: boolean;
+    // Default: true
+    relaxedValidation?: boolean;
+    // Default: cccagg_or_exchange
+    e?: string;
+  }) {
+    return this.fetchRawApi<cctypes.CoinPriceFullMulti>(
+      this.apiUrl(`pricemultifull`, params)
+    );
+  }
+
   // https://min-api.cryptocompare.com/documentation?key=Historical&cat=dataHistoday
   async history(
     period: "day" | "hour" | "minute",
@@ -91,7 +112,7 @@ export class CryptoCompareClient {
       // Default: false
       allData?: boolean;
       // Default:
-      toTs: number;
+      toTs?: number;
     }
   ): Promise<cctypes.OHLCVHistory> {
     return this.fetchApi<cctypes.OHLCVHistory>(
