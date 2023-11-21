@@ -1,1 +1,1 @@
-export { CoinAPI } from "./CoinAPI";
+export * from "./CoinAPI";
