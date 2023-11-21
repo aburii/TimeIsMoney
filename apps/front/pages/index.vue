@@ -3,5 +3,5 @@
   <HomeStatSection />
   <HomeChartDemoSection />
   <HomeFeaturesDetailSection />
-  <HomeDashboardPreviewSection />
+  <HomeDashBoardPreviewSection />
 </template>
