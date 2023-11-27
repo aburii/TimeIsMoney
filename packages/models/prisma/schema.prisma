@@ -54,3 +54,8 @@ model UserFollowedCurrencies {
   userId     Int
   currencyId Int
 }
+
+enum App {
+  FRONT
+  BO
+}
