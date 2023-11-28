@@ -1,68 +1,72 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
-import { logInDto } from '@timeismoney/dto';
 import { User } from '@prisma/client';
+import { compareHash, hash } from '@timeismoney/security';
+import { ITokens } from '../../types/jwt';
+import { ConfigService } from '@nestjs/config';
+import { App } from '@timeismoney/models';
+import { IRequestUser } from '../../types/passport/request-user';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
+    private readonly configService: ConfigService,
   ) {}
 
-  async validateUser(credentials: logInDto) {
-    const { email, password } = await this.userService.findOneByEmail(
-      credentials.email,
-    );
+  async validateUser(email: string, password: string): Promise<User | null> {
+    const user = await this.userService.findOneByEmail(email);
+
+    const compare = compareHash(user.password, password);
+
+    return user && compare ? user : null;
   }
 
-  // ======= SERVICE FOR SIGN UP THE APPLICATION =======
-  async login(credentials: logInDto) {
-    const user: User | null = await this.userService.findOneByEmail(
-      credentials.email,
-    );
-
-    return user;
+  async login(user: IRequestUser, app: App): Promise<ITokens> {
+    const tokens = await this.generateTokens(user, app);
+    await this.updateUserRefresh(user.userId, tokens.refreshToken);
+    return tokens;
   }
 
-  // async signUp(data) {
-  //   // const hashedPassword = await bcrypt.hash(data.password, 10);
-  //   // try {
-  //   //   return await this.prismaService.user.create({
-  //   //     data: {
-  //   //       lastname: data.lastname,
-  //   //       firstname: data.firstname,
-  //   //       nickname: data.nickname,
-  //   //       email: data.email,
-  //   //       password: hashedPassword,
-  //   //       default_currency: {
-  //   //         connect: { id: data.currencyId },
-  //   //       },
-  //   //     },
-  //   //   });
-  //   // } catch (error) {
-  //   //   throw new ForbiddenException('Email already exists');
-  //   // }
-  // }
-  //
-  // // ======= SERVICE FOR LOG IN THE APPLICATION =======
-  // async logIn(data) {
-  //   // const user = await this.prismaService.user.findUnique({
-  //   //   where: { email: data.email },
-  //   // });
-  //   // if (!user) {
-  //   //   throw new ForbiddenException('Wrong email or password');
-  //   // }
-  //   // const isPasswordValid = await bcrypt.compare(data.password, user.password);
-  //   // if (!isPasswordValid) {
-  //   //   throw new ForbiddenException('Wrong email or password');
-  //   // }
-  //   // const token = this.jwtService.sign({
-  //   //   id: user.id,
-  //   //   nickname: user.nickname,
-  //   //   email: user.email,
-  //   // });
-  //   // return { user, token };
-  // }
+  async generateTokens(user: IRequestUser, app: App): Promise<ITokens> {
+    const [at, rt] = await Promise.all([
+      this.jwtService.signAsync(
+        {
+          userId: user.userId,
+          app,
+          expiresIn: this.configService.get<string>('JWT_AT_EXPIRATION'),
+        },
+        {
+          secret: this.configService.get<string>('JWT_AT_SECRET'),
+          expiresIn: this.configService.get<string>('JWT_AT_EXPIRATION'),
+        },
+      ),
+      this.jwtService.signAsync(
+        {
+          userId: user.userId,
+          app,
+          expiresIn: this.configService.get<string>('JWT_RT_EXPIRATION'),
+        },
+        {
+          secret: this.configService.get<string>('JWT_RT_SECRET'),
+          expiresIn: this.configService.get<string>('JWT_RT_EXPIRATION'),
+        },
+      ),
+    ]);
+    return {
+      accessToken: at,
+      refreshToken: rt,
+    };
+  }
+
+  async updateUserRefresh(userId: number, token: string) {
+    const hashedToken = await hash(token);
+    return this.userService.updateOne(userId, { refresh: hashedToken });
+  }
+
+  async removeUserRefresh(userId: number) {
+    return this.userService.updateOne(userId, { refresh: null });
+  }
 }

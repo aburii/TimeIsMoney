@@ -1,4 +1,5 @@
-import { IsNotEmpty } from "class-validator";
+import { IsEnum, IsNotEmpty } from "class-validator";
+import { App } from "@timeismoney/models";
 
 export class logInDto {
   @IsNotEmpty()
@@ -6,4 +7,8 @@ export class logInDto {
 
   @IsNotEmpty()
   password: string;
+
+  @IsNotEmpty()
+  @IsEnum(App)
+  app: App;
 }

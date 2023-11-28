@@ -23,4 +23,13 @@ export class UserService extends PrismaCrudService {
       },
     });
   }
+
+  async updateOne(id: number, data: Partial<User>): Promise<User | null> {
+    return this.prisma.user.update({
+      where: {
+        id,
+      },
+      data,
+    });
+  }
 }
