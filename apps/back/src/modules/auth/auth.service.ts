@@ -6,7 +6,7 @@ import { compareHash, hash } from '@timeismoney/security';
 import { ITokens } from '../../types/jwt';
 import { ConfigService } from '@nestjs/config';
 import { App } from '@timeismoney/models';
-import { IRequestUser } from '../../types/passport/request-user';
+import { signUpDto } from '@timeismoney/dto';
 
 @Injectable()
 export class AuthService {
@@ -19,22 +19,30 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.userService.findOneByEmail(email);
 
-    const compare = compareHash(user.password, password);
+    if (!user) return null;
+
+    const compare = await compareHash(user.password, password);
 
     return user && compare ? user : null;
   }
 
-  async login(user: IRequestUser, app: App): Promise<ITokens> {
-    const tokens = await this.generateTokens(user, app);
-    await this.updateUserRefresh(user.userId, tokens.refreshToken);
+  async registerUser(newUser: signUpDto) {
+    const hashPw = await hash(newUser.password);
+
+    return this.userService.insertOne({ ...newUser, password: hashPw });
+  }
+
+  async login(userId: number, app: App): Promise<ITokens> {
+    const tokens = await this.generateTokens(userId, app);
+    await this.updateUserRefresh(userId, tokens.refreshToken);
     return tokens;
   }
 
-  async generateTokens(user: IRequestUser, app: App): Promise<ITokens> {
+  async generateTokens(id: number, app: App): Promise<ITokens> {
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(
         {
-          userId: user.userId,
+          userId: id,
           app,
           expiresIn: this.configService.get<string>('JWT_AT_EXPIRATION'),
         },
@@ -45,7 +53,7 @@ export class AuthService {
       ),
       this.jwtService.signAsync(
         {
-          userId: user.userId,
+          userId: id,
           app,
           expiresIn: this.configService.get<string>('JWT_RT_EXPIRATION'),
         },

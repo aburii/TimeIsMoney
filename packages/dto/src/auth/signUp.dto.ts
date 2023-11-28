@@ -3,9 +3,9 @@ import {
   IsNotEmpty,
   IsString,
   IsNumber,
-  Validate,
+  IsOptional,
   // Matches,
-} from 'class-validator';
+} from "class-validator";
 
 export class signUpDto {
   @IsNotEmpty()
@@ -31,14 +31,7 @@ export class signUpDto {
   // })
   password: string;
 
-  @IsString()
-  @IsNotEmpty()
-  @Validate((value, args) => value === args.object.password, {
-    message: 'please use the same password',
-  })
-  confirmPassword: string;
-
   @IsNumber()
-  @IsNotEmpty()
-  currencyId: number;
+  @IsOptional()
+  currencyId?: number;
 }

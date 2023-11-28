@@ -24,9 +24,9 @@ model User {
 
   pressKeywords String[] @default([])
 
-  default_currency         Currency                 @relation(fields: [currencyId], references: [id], onDelete: NoAction)
+  currency                 Currency?                @relation(references: [id], onDelete: NoAction, fields: [currencyId])
+  currencyId               Int?
   followedCryptoCurrencies UserFollowedCurrencies[]
-  currencyId               Int
 }
 
 model Currency {
