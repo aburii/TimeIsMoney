@@ -72,10 +72,16 @@ export class CryptoCompareClient {
     summary?: boolean;
     // Default:
     fsym?: string;
-  }): Promise<cctypes.CoinsSummary> {
-    return this.fetchApi<cctypes.CoinsSummary>(
-      this.apiUrl(`all/coinlist`, params)
-    );
+  }): Promise<cctypes.CoinsInformations | cctypes.CoinInformationShort> {
+    if (params?.summary) {
+      return this.fetchApi<cctypes.CoinInformationShort>(
+        this.apiUrl(`all/coinlist`, params)
+      );
+    } else {
+      return this.fetchApi<cctypes.CoinsInformations>(
+        this.apiUrl(`all/coinlist`, params)
+      );
+    }
   }
 
   async coinFullData(params: {
@@ -117,6 +123,16 @@ export class CryptoCompareClient {
   ): Promise<cctypes.OHLCVHistory> {
     return this.fetchApi<cctypes.OHLCVHistory>(
       this.apiUrl(`v2/histo${period}/`, params)
+    );
+  }
+
+  // https://min-api.cryptocompare.com/documentation?key=Social&cat=latestCoinSocialStats
+  async coinSocialStats(params: {
+    // Default: 1182 (BTC)
+    coinId?: number;
+  }): Promise<cctypes.SocialStats> {
+    return this.fetchApi<cctypes.SocialStats>(
+      this.apiUrl("social/coin/latest", params)
     );
   }
 
