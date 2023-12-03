@@ -17,6 +17,14 @@ export class UserService extends PrismaCrudService {
     return PrismaCrudService.prismaClient;
   }
 
+  override async findOne(id: number): Promise<User | null> {
+    return this.prisma.user.findFirst({
+      where: {
+        id,
+      },
+    });
+  }
+
   async findOneByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findFirst({
       where: {

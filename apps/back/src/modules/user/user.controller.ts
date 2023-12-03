@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -30,11 +31,8 @@ export class UserController {
   }
 
   @Get(':id')
-  async findOne(
-    @Param('id') id: string,
-    @Query('crudQuery') crudQuery: string,
-  ) {
-    return await this.userService.findOne(id, { crudQuery });
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return await this.userService.findOne(id);
   }
 
   @Patch(':id')

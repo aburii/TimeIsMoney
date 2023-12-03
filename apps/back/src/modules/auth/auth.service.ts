@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { User } from '@prisma/client';
@@ -35,6 +35,26 @@ export class AuthService {
   async login(userId: number, app: App): Promise<ITokens> {
     const tokens = await this.generateTokens(userId, app);
     await this.updateUserRefresh(userId, tokens.refreshToken);
+    return tokens;
+  }
+
+  async refreshSession(
+    userId: number,
+    app: App,
+    refreshToken: string,
+  ): Promise<ITokens> {
+    const user = await this.userService.findOne(userId);
+
+    const compare = compareHash(user.refresh, refreshToken);
+
+    if (!compare) {
+      throw new UnauthorizedException();
+    }
+
+    const tokens = await this.generateTokens(userId, app);
+
+    await this.updateUserRefresh(userId, app);
+
     return tokens;
   }
 
