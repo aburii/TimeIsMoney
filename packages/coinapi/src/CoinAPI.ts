@@ -1,38 +1,6 @@
 import { CryptoCompareClient } from "@timeismoney/cryptocompare";
-
-export interface OHLV {
-  open: number;
-  high: number;
-  low: number;
-  volume: number;
-  change?: number;
-  changePercent?: number;
-}
-
-export interface OHLCV extends OHLV {
-  close: number;
-}
-
-export interface CoinSummary {
-  fullname: string;
-  imageUrl: string;
-  symbol: string;
-}
-
-export interface CoinStatus {
-  currentPrice: number;
-  dayCandle: OHLV;
-  hourCandle: OHLV;
-  last24hCandle: OHLV;
-}
-
-export interface CoinsStatus {
-  [symbol: string]: CoinStatus;
-}
-
-export interface CoinDetails extends CoinSummary {
-  status: CoinStatus;
-}
+import * as cc from "@timeismoney/cryptocompare";
+import * as types from "./types";
 
 export class CoinAPI {
   client: CryptoCompareClient;
@@ -41,81 +9,303 @@ export class CoinAPI {
     this.client = new CryptoCompareClient(apiKey);
   }
 
-  async listCoins(): Promise<CoinSummary[]> {
-    const coins = await this.client.coinList({ summary: true });
-    const summaries: CoinSummary[] = [];
+  private convertCCCoinInformationShort(
+    coin: cc.CoinInformationShort
+  ): types.CoinInformationsShort {
+    return {
+      id: coin.Id,
+      fullname: coin.FullName,
+      imageUrl: `https://www.cryptocompare.com/${coin.ImageUrl}`,
+      symbol: coin.Symbol,
+    };
+  }
+
+  private convertCCCoinInformation(
+    coin: cc.CoinInformation
+  ): types.CoinInformations {
+    const short = this.convertCCCoinInformationShort(coin);
+    return {
+      ...short,
+      maxSupply: coin.MaxSupply,
+      coinName: coin.CoinName,
+      description: coin.Description,
+      launchDate: coin.AssetLaunchDate,
+      website: coin.AssetWebsiteUrl,
+      whitepaper: coin.AssetWhitepaperUrl,
+    };
+  }
+
+  private convertCCCoinPriceFullRaw(
+    coinPrice: cc.CoinPriceFullRaw
+  ): types.CoinSymbolPrices {
+    return {
+      currentPrice: coinPrice.PRICE,
+      marketCap: coinPrice.MKTCAP,
+      totalVolume: coinPrice.SUPPLY,
+      dayCandle: {
+        open: coinPrice.OPENDAY,
+        high: coinPrice.HIGHDAY,
+        low: coinPrice.LOWDAY,
+        volume: coinPrice.VOLUMEDAY,
+        volumeCoin: coinPrice.VOLUMEDAYTO,
+        change: coinPrice.CHANGEDAY,
+        changePercent: coinPrice.CHANGEPCTDAY,
+      },
+      hourCandle: {
+        open: coinPrice.OPENHOUR,
+        high: coinPrice.HIGHHOUR,
+        low: coinPrice.LOWHOUR,
+        volume: coinPrice.VOLUMEHOUR,
+        volumeCoin: coinPrice.VOLUME24HOURTO,
+        change: coinPrice.CHANGEHOUR,
+        changePercent: coinPrice.CHANGEPCTHOUR,
+      },
+      last24hCandle: {
+        open: coinPrice.OPEN24HOUR,
+        high: coinPrice.HIGH24HOUR,
+        low: coinPrice.LOW24HOUR,
+        volume: coinPrice.VOLUME24HOUR,
+        volumeCoin: coinPrice.VOLUME24HOURTO,
+        change: coinPrice.CHANGE24HOUR,
+        changePercent: coinPrice.CHANGEPCT24HOUR,
+      },
+    };
+  }
+
+  private convertCCArticle(article: cc.Article): types.Article {
+    return {
+      id: article.id,
+      guid: article.guid,
+      publishedOn: article.published_on,
+      imageUrl: article.imageurl,
+      title: article.title,
+      url: article.url,
+      body: article.body,
+      tags: article.tags,
+      lang: article.lang,
+      upvotes: article.upvotes,
+      downvotes: article.downvotes,
+      categories: article.categories,
+      source: {
+        name: article.source_info.name,
+        lang: article.source_info.lang,
+        img: article.source_info.img,
+      },
+      sourceName: article.source,
+    };
+  }
+
+  private convertCCGeneralStats(
+    stats: cc.GeneralSocialStats
+  ): types.GeneralSocialStats {
+    return {
+      points: stats.Points,
+      Name: stats.Name,
+      CoinName: stats.CoinName,
+      Type: stats.Type,
+    };
+  }
+
+  private convertCCStats(
+    stats: cc.CryptoCompareStats
+  ): types.CryptoCompareStats {
+    return {
+      points: stats.Points,
+      comments: stats.Comments,
+      posts: stats.Posts,
+      followers: stats.Followers,
+    };
+  }
+
+  private convertCCTwittterStats(stats: cc.TwitterStats): types.TwitterStats {
+    return {
+      points: stats.Points,
+      link: stats.link,
+      name: stats.name,
+      followers: stats.followers,
+      following: stats.following,
+      lists: stats.lists,
+      favourites: stats.favourites,
+      statuses: stats.statuses,
+      createdAt: stats.account_creation,
+    };
+  }
+
+  private convertCCRedditStats(stats: cc.RedditStats): types.RedditStats {
+    return {
+      points: stats.Points,
+      link: stats.link,
+      name: stats.name,
+      createdAt: stats.community_creation,
+      subscribers: stats.subscribers,
+      activeUsers: stats.active_users,
+      postsPerHour: stats.posts_per_hour,
+      commentsPerHour: stats.comments_per_hour,
+      postsPerDay: stats.posts_per_day,
+      commentsPerDay: stats.comments_per_day,
+    };
+  }
+
+  private convertCCCodeRepository(
+    repo: cc.CodeRepository
+  ): types.CodeRepository {
+    return {
+      stars: repo.stars,
+      forks: repo.forks,
+      subscribers: repo.subscribers,
+      contributors: repo.contributors,
+      size: repo.size,
+      openIssues: repo.open_issues,
+      closedIssues: repo.closed_issues,
+      openPullIssues: repo.open_pull_issues,
+      closedPullIssues: repo.closed_pull_issues,
+      openTotalIssues: repo.open_total_issues,
+      closedTotalIssues: repo.closed_total_issues,
+      lastUpdate: repo.last_update,
+      lastPush: repo.last_push,
+      url: repo.url,
+      isFork: repo.fork,
+      createdAt: repo.created_at,
+    };
+  }
+
+  private convertCCCodeRepositories(
+    stats: cc.CodeRepositoriesStats
+  ): types.CodeRepositoriesStats {
+    return {
+      points: stats.Points,
+      repositories: stats.List.map(this.convertCCCodeRepository),
+    };
+  }
+
+  private convertCCSocialStats(stats: cc.SocialStats): types.SocialStats {
+    return {
+      general: this.convertCCGeneralStats(stats.General),
+      cryptoCompare: this.convertCCStats(stats.CryptoCompare),
+      twitter: this.convertCCTwittterStats(stats.Twitter),
+      reddit: this.convertCCRedditStats(stats.Reddit),
+      codeRepositories: this.convertCCCodeRepositories(stats.CodeRepository),
+    };
+  }
+
+  async listCoins(): Promise<types.CoinInformationsShort[]> {
+    const coins: cc.CoinsInformationsShort = await this.client.coinList({
+      summary: true,
+    });
+    const informations: types.CoinInformationsShort[] = [];
 
     for (const sym in coins) {
       const coin = coins[sym];
-      summaries.push({
-        fullname: coin.FullName,
-        imageUrl: `https://www.cryptocompare.com/${coin.ImageUrl}`,
-        symbol: sym,
-      });
+      informations.push(this.convertCCCoinInformationShort(coin));
     }
-    return summaries;
+    return informations;
   }
 
-  async coinSummary(coinSymbol: string): Promise<CoinSummary | undefined> {
-    const coins = await this.client.coinList({
+  async coinInformationsShort(
+    coinSymbol: string
+  ): Promise<types.CoinInformationsShort | undefined> {
+    const coins: cc.CoinsInformationsShort = await this.client.coinList({
       fsym: coinSymbol,
       summary: true,
     });
 
     for (const sym in coins) {
       const coin = coins[sym];
-      return {
-        fullname: coin.FullName,
-        imageUrl: `https://www.cryptocompare.com/${coin.ImageUrl}`,
-        symbol: sym,
-      };
+      return this.convertCCCoinInformationShort(coin);
     }
     return undefined;
   }
 
-  async coinsStatus(
-    coinsID: string[],
+  async coinInformations(
+    coinSymbol: string
+  ): Promise<types.CoinInformations | undefined> {
+    const coins = (await this.client.coinList({
+      fsym: coinSymbol,
+      summary: false,
+    })) as cc.CoinsInformations;
+
+    for (const sym in coins) {
+      const coin = coins[sym];
+      return this.convertCCCoinInformation(coin);
+    }
+    return undefined;
+  }
+
+  async coinsPrices(
+    coinSymbols: string[],
     destSymbols: string[] = ["EUR"]
-  ): Promise<CoinsStatus> {
+  ): Promise<types.MultiCoinsPrices> {
     const data = await this.client.coinFullData({
-      fsyms: coinsID,
+      fsyms: coinSymbols,
       tsyms: destSymbols,
     });
 
-    const status: CoinsStatus = {};
+    const prices: types.MultiCoinsPrices = {};
     for (const coinSymbol in data.RAW) {
+      prices[coinSymbol] = {};
       for (const destSymbol in data.RAW[coinSymbol]) {
-        const priceData = data.RAW[coinSymbol][destSymbol];
-
-        status[coinSymbol] = {
-          currentPrice: priceData.PRICE,
-          dayCandle: {
-            open: priceData.OPENDAY,
-            high: priceData.HIGHDAY,
-            low: priceData.LOWDAY,
-            volume: priceData.VOLUMEDAY,
-            change: priceData.CHANGEDAY,
-            changePercent: priceData.CHANGEPCTDAY,
-          },
-          hourCandle: {
-            open: priceData.OPENHOUR,
-            high: priceData.HIGHHOUR,
-            low: priceData.LOWHOUR,
-            volume: priceData.VOLUMEHOUR,
-            change: priceData.CHANGEHOUR,
-            changePercent: priceData.CHANGEPCTHOUR,
-          },
-          last24hCandle: {
-            open: priceData.OPEN24HOUR,
-            high: priceData.HIGH24HOUR,
-            low: priceData.LOW24HOUR,
-            volume: priceData.VOLUME24HOUR,
-            change: priceData.CHANGE24HOUR,
-            changePercent: priceData.CHANGEPCT24HOUR,
-          },
-        };
+        prices[coinSymbol][destSymbol] = this.convertCCCoinPriceFullRaw(
+          data.RAW[coinSymbol][destSymbol]
+        );
       }
     }
-    return status;
+    return prices;
+  }
+
+  async coinSymbolsPrices(
+    coinSymbol: string,
+    destSymbols: string[] = ["EUR"]
+  ): Promise<types.CoinSymbolsPrices> {
+    return (await this.coinsPrices([coinSymbol], destSymbols))[coinSymbol];
+  }
+
+  async coinSymbolPrices(
+    coinSymbol: string,
+    destSymbols: string = "EUR"
+  ): Promise<types.CoinSymbolPrices> {
+    return (await this.coinSymbolsPrices(coinSymbol, [destSymbols]))[
+      destSymbols
+    ];
+  }
+
+  async newsArticles(params?: {
+    // Default: ALL_NEWS_FEEDS
+    feeds?: string[];
+    // Default: ALL_NEWS_CATEGORIES
+    categories?: string[];
+    // Default: NO_EXCLUDED_NEWS_CATEGORIES
+    excludeCategories?: string[];
+    // Default: 0
+    lTs?: number;
+    // Default: EN
+    lang: string;
+    // Default: latest
+    sortOrder: "latest" | "popular";
+  }): Promise<types.Article[]> {
+    const articles = await this.client.newsList(params);
+    return articles.map(this.convertCCArticle);
+  }
+
+  async latestArticles(
+    categories?: string[],
+    lang: string = "EN"
+  ): Promise<types.Article[]> {
+    return this.newsArticles({
+      categories: categories,
+      lang: lang,
+      sortOrder: "latest",
+    });
+  }
+
+  async coinArticles(
+    coinSymbol: string,
+    lang: string = "EN"
+  ): Promise<types.Article[]> {
+    return this.latestArticles([coinSymbol], lang);
+  }
+
+  async coinSocialStats(coinId?: number): Promise<types.SocialStats> {
+    const socialStats = await this.client.coinSocialStats({ coinId: coinId });
+    return this.convertCCSocialStats(socialStats);
   }
 }

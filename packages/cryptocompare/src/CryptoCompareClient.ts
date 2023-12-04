@@ -72,9 +72,9 @@ export class CryptoCompareClient {
     summary?: boolean;
     // Default:
     fsym?: string;
-  }): Promise<cctypes.CoinsInformations | cctypes.CoinInformationShort> {
+  }): Promise<cctypes.CoinsInformations | cctypes.CoinsInformationsShort> {
     if (params?.summary) {
-      return this.fetchApi<cctypes.CoinInformationShort>(
+      return this.fetchApi<cctypes.CoinsInformationsShort>(
         this.apiUrl(`all/coinlist`, params)
       );
     } else {
