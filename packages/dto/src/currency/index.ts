@@ -1,2 +1,2 @@
-export * from "./create-currency.dto";
-export * from "./update-currency.dto";
+export * from "./createCurrency.dto";
+export * from "./updateCurrency.dto";
