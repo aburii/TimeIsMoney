@@ -11,7 +11,7 @@ export async function useFetchAPI<T>(
   const session = useSessionStore();
 
   const response = await fetch(url, {
-    credentials: "same-origin",
+    credentials: "include",
     headers: {
       "Content-type": "application/json",
     },

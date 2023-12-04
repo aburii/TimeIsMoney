@@ -8,18 +8,33 @@ export const useSessionStore = defineStore("session", () => {
   const isLoggedIn = computed(() => user.value != null);
   const isRefreshing = ref<boolean>(false);
 
+  async function reloadUser() {
+    const response = await useGetMe()();
+
+    if (!response.ok) {
+      localLogout();
+      return;
+    }
+    user.value = response.data;
+  }
+
   async function login(credentials: any) {
     const login = useLogin();
     const response = await useLogin()(credentials);
 
-    return response.ok;
+    if (!response.ok) {
+      return false;
+    }
+
+    await reloadUser();
+    return true;
   }
 
   async function refreshSession(): Promise<boolean> {
     return false;
   }
   async function logout() {}
-  async function localLogout() {}
+  function localLogout() {}
 
   return {
     user,
