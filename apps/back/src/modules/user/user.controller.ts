@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -16,7 +17,11 @@ import {
   UserInterceptor,
   UsersListInterceptor,
 } from '../../interceptors/user.interceptor';
+import { AccessGuard } from '../../guards/passport/jwt-at.guard';
+import { RequestUser } from '../../decorators/request-user.decorator';
+import { IRequestUser } from '../../types/passport/request-user';
 
+@UseGuards(AccessGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -33,6 +38,12 @@ export class UserController {
   @Get()
   async findMany(@Query('crudQuery') crudQuery: string) {
     return await this.userService.findMany({ crudQuery });
+  }
+
+  @UseInterceptors(UserInterceptor)
+  @Get('me')
+  async getMe(@RequestUser() user: IRequestUser) {
+    return await this.userService.findOne(user.userId);
   }
 
   @UseInterceptors(UserInterceptor)

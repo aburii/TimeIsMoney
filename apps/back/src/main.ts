@@ -8,11 +8,12 @@ import { PrismaClientExceptionFilter } from './filters/prisma.filter';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
-  app.use(cookieParser());
   app.enableCors({
-    origin: '*',
+    origin: ['http://localhost:3001'],
     credentials: true,
   });
+  app.use(cookieParser());
+  app.getHttpAdapter().getInstance().disable('x-powered-by');
   app.useGlobalFilters(new PrismaClientExceptionFilter());
   app.useGlobalInterceptors(new GlobalResponseInterceptor());
   app.useGlobalPipes(
