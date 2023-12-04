@@ -32,6 +32,7 @@ export class AuthController {
   }
 
   @UseGuards(LocalGuard)
+  @HttpCode(HttpStatus.OK)
   @Post('/login')
   async login(
     @RequestUser() user: IRequestUser,
