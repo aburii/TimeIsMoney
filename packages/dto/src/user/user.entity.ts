@@ -1,5 +1,5 @@
-export class UserDto {
-  constructor(partial: Partial<UserDto>) {
+export class UserEntity {
+  constructor(partial: Partial<UserEntity>) {
     Object.assign(this, partial);
   }
 

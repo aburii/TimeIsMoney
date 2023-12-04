@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { UserDto } from '@timeismoney/dto';
+import { UserEntity } from '@timeismoney/dto';
 import { User } from '@prisma/client';
 
 @Injectable()
@@ -14,7 +14,7 @@ export class UserInterceptor implements NestInterceptor {
   intercept(
     context: ExecutionContext,
     next: CallHandler,
-  ): Observable<UserDto> | Promise<Observable<UserDto>> {
+  ): Observable<UserEntity> | Promise<Observable<UserEntity>> {
     return next.handle().pipe(
       map((data: User) => {
         return {
@@ -38,7 +38,7 @@ export class UsersListInterceptor implements NestInterceptor {
   intercept(
     context: ExecutionContext,
     next: CallHandler,
-  ): Observable<UserDto[]> | Promise<Observable<UserDto[]>> {
+  ): Observable<UserEntity[]> | Promise<Observable<UserEntity[]>> {
     return next.handle().pipe(
       map((data: { data: User[] }) => {
         return data.data.map((user: User) => ({
