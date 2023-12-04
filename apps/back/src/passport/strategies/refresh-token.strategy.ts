@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import { JwtPayload } from '../../types/jwt';
+import { IRequestUser } from '../../types/passport/request-user';
 
 @Injectable()
 export class RefreshTokenStrategy extends PassportStrategy(
@@ -21,9 +22,8 @@ export class RefreshTokenStrategy extends PassportStrategy(
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async validate(request: Request, payload: JwtPayload): Promise<string> {
-    return RefreshTokenStrategy.extractTokenFromCookies(request);
+  async validate(payload: JwtPayload): Promise<IRequestUser> {
+    return { userId: payload.userId, app: payload.app };
   }
 
   private static extractTokenFromCookies(request: Request) {
