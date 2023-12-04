@@ -75,7 +75,7 @@ export class CryptoController {
     symbols: string[],
   ) {
     return this.cryptoService.coinsPrices(
-      await this.cryptoService.defaultConversionCurrency(),
+      this.cryptoService.defaultConversionCurrency(),
       symbols,
     );
   }
@@ -84,7 +84,7 @@ export class CryptoController {
   async coinPrices(@Param('symbol') symbol: string) {
     return this.cryptoService.coinPrices(
       symbol,
-      await this.cryptoService.defaultConversionCurrency(),
+      this.cryptoService.defaultConversionCurrency(),
     );
   }
 
@@ -95,7 +95,7 @@ export class CryptoController {
   ) {
     return this.cryptoService.coinHistory(
       symbol,
-      await this.cryptoService.defaultConversionCurrency(),
+      this.cryptoService.defaultConversionCurrency(),
       period,
     );
   }
