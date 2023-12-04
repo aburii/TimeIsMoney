@@ -7,12 +7,11 @@ export async function useFetchAPI<T>(
   method: "GET" | "POST" | "PUT" | "DELETE",
   url: string,
   body?: any,
-  publicRoute: boolean = false,
 ): Promise<Ok<T> | Err> {
   const session = useSessionStore();
 
   const response = await fetch(url, {
-    credentials: "include",
+    credentials: "same-origin",
     headers: {
       "Content-type": "application/json",
     },
@@ -31,7 +30,7 @@ export async function useFetchAPI<T>(
         return { ok: false, status: response.status };
       }
 
-      return useFetchAPI(method, url, body, publicRoute);
+      return useFetchAPI(method, url, body);
     }
     return { ok: false, status: response.status };
   }

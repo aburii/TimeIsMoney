@@ -13,4 +13,15 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+
+  typescript: {
+    strict: true,
+    shim: false,
+  },
+
+  runtimeConfig: {
+    public: {
+      BACK_URL: "",
+    },
+  },
 });
