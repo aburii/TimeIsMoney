@@ -9,7 +9,21 @@ export interface OHLV {
 }
 
 export interface OHLCV extends OHLV {
+  time: number;
   close: number;
+}
+
+export enum HistoryPeriod {
+  Daily = "day",
+  Hourly = "hour",
+  Minute = "minute",
+}
+
+export interface CoinHistory {
+  period: HistoryPeriod;
+  timeFrom: number;
+  timeTo: number;
+  history: OHLCV[];
 }
 
 /// Price of a coin in a symbol (ex: BTC -> EUR)

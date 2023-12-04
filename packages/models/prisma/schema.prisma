@@ -36,7 +36,7 @@ model Currency {
 
   name      String
   symbol    String  @unique
-  api_id    String  @unique
+  api_id    Int     @unique
   is_crypto Boolean
   image_url String?
 

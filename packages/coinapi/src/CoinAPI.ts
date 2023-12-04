@@ -72,6 +72,32 @@ export class CoinAPI {
     };
   }
 
+  private convertCCOHLCV(ohlcv: cc.OHLCV): types.OHLCV {
+    return {
+      time: ohlcv.time,
+      open: ohlcv.open,
+      high: ohlcv.high,
+      low: ohlcv.low,
+      close: ohlcv.close,
+      volume: ohlcv.volumefrom,
+      volumeCoin: ohlcv.volumeto,
+      change: ohlcv.close - ohlcv.open,
+      changePercent: (ohlcv.close - ohlcv.open) / ohlcv.open,
+    };
+  }
+
+  private convertCCHistory(
+    period: types.HistoryPeriod,
+    history: cc.OHLCVHistory
+  ): types.CoinHistory {
+    return {
+      period: period,
+      timeFrom: history.TimeFrom,
+      timeTo: history.TimeTo,
+      history: history.Data.map(this.convertCCOHLCV),
+    };
+  }
+
   private convertCCArticle(article: cc.Article): types.Article {
     return {
       id: article.id,
@@ -266,6 +292,22 @@ export class CoinAPI {
     return (await this.coinSymbolsPrices(coinSymbol, [destSymbols]))[
       destSymbols
     ];
+  }
+
+  async coinHistory(
+    coinSymbol: string,
+    destSymbol: string,
+    period: types.HistoryPeriod = types.HistoryPeriod.Daily,
+    limit: number = 30,
+    aggregate: number = 1
+  ): Promise<types.CoinHistory> {
+    const history = await this.client.history(period, {
+      fsym: coinSymbol,
+      tsym: destSymbol,
+      aggregate: aggregate,
+      limit: limit,
+    });
+    return this.convertCCHistory(period, history);
   }
 
   async newsArticles(params?: {
