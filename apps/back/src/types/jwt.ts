@@ -1,4 +1,4 @@
-import { App } from '@timeismoney/models/dist';
+import { App } from '@timeismoney/models';
 
 export interface JwtPayload {
   userId: number;
