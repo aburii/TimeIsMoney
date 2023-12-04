@@ -1,7 +1,7 @@
 import { IsEnum, IsNotEmpty } from "class-validator";
 import { App } from "@timeismoney/models";
 
-export class logInDto {
+export class LoginDto {
   @IsNotEmpty()
   email: string;
 
