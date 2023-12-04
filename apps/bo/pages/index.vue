@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { useSessionStore } from "~/stores/session";
 
+definePageMeta({
+  middleware: ["guest"],
+});
+
 const sessionStore = useSessionStore();
 
 const login = async () => {
