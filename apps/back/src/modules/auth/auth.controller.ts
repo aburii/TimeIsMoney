@@ -3,6 +3,8 @@ import {
   Controller,
   HttpCode,
   HttpStatus,
+  Param,
+  ParseIntPipe,
   Post,
   Req,
   Res,
@@ -18,7 +20,6 @@ import { Request, Response } from 'express';
 import { UserInterceptor } from '../../interceptors/user.interceptor';
 import { IRequestUser } from '../../types/passport/request-user';
 import { RefreshGuard } from '../../guards/passport/jwt-rt.guard';
-import { AccessGuard } from '../../guards/passport/jwt-at.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -83,14 +84,13 @@ export class AuthController {
     return user;
   }
 
-  @UseGuards(AccessGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  @Post('/logout')
+  @Post('/logout/:id')
   async logout(
-    @RequestUser() user: IRequestUser,
+    @Param('id', ParseIntPipe) id: number,
     @Res({ passthrough: true }) response: Response,
   ) {
-    await this.authService.removeUserRefresh(user.userId);
+    await this.authService.removeUserRefresh(id);
 
     response.clearCookie('access_token');
     response.clearCookie('refresh_token');

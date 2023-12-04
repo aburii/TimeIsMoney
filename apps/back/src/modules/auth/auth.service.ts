@@ -95,6 +95,6 @@ export class AuthService {
   }
 
   async removeUserRefresh(userId: number) {
-    return this.userService.updateOne(userId, { refresh: null });
+    return this.userService.updateOne(userId, { refresh: '' });
   }
 }
