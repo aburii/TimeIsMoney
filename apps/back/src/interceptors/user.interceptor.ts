@@ -32,3 +32,27 @@ export class UserInterceptor implements NestInterceptor {
     );
   }
 }
+
+@Injectable()
+export class UsersListInterceptor implements NestInterceptor {
+  intercept(
+    context: ExecutionContext,
+    next: CallHandler,
+  ): Observable<UserDto[]> | Promise<Observable<UserDto[]>> {
+    return next.handle().pipe(
+      map((data: { data: User[] }) => {
+        return data.data.map((user: User) => ({
+          id: user.id,
+          email: user.email,
+          firstname: user.firstname,
+          lastname: user.lastname,
+          nickname: user.lastname,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
+          currency: user.currencyId,
+          pressKeywords: user.pressKeywords,
+        }));
+      }),
+    );
+  }
+}
