@@ -9,8 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { CurrencyService } from './currency.service';
-import { CreateCurrencyDto } from '@timeismoney/dto/dist/currency/create-currency.dto';
-import { UpdateCurrencyDto } from '@timeismoney/dto/dist/currency/update-currency.dto';
+import { CreateCurrencyDto, UpdateCurrencyDto } from '@timeismoney/dto';
 
 @Controller('currencies')
 export class CurrencyController {
