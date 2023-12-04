@@ -4,7 +4,7 @@ import {
   IsString,
   IsNumber,
   IsOptional,
-  // Matches,
+  Matches,
 } from "class-validator";
 
 export class signUpDto {
@@ -26,9 +26,9 @@ export class signUpDto {
 
   @IsString()
   @IsNotEmpty()
-  // @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*/, {
-  //   message: 'Password too weak',
-  // })
+  @Matches(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, {
+    message: "Invalid password format",
+  })
   password: string;
 
   @IsNumber()
