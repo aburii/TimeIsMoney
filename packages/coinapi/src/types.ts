@@ -67,6 +67,23 @@ export interface CoinInformations extends CoinInformationsShort {
 
 export interface CoinSocialStats {}
 
+export interface Category {
+  categoryName: string;
+  wordsAssociatedWithCategory: string[];
+}
+
+export interface Feed {
+  key: string;
+  name: string;
+  img: string;
+  lang: string;
+}
+
+export interface FeedsAndCategories {
+  Categories: Category[];
+  Feeds: Feed[];
+}
+
 export interface ArticleSource {
   name: string;
   img: string;
@@ -74,7 +91,7 @@ export interface ArticleSource {
 }
 
 export interface Article {
-  id: string;
+  id: number;
   guid: string;
   publishedOn: number;
   imageUrl: string;

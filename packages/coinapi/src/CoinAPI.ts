@@ -109,7 +109,7 @@ export class CoinAPI {
 
   private convertCCArticle(article: cc.Article): types.Article {
     return {
-      id: article.id,
+      id: +article.id,
       guid: article.guid,
       publishedOn: article.published_on,
       imageUrl: article.imageurl,
@@ -346,6 +346,18 @@ export class CoinAPI {
       lang: lang,
       sortOrder: "latest",
     });
+  }
+
+  async newsFeeds(): Promise<types.Feed[]> {
+    return this.client.newsFeeds();
+  }
+
+  async newsCategories(): Promise<types.Category[]> {
+    return this.client.newsCategories();
+  }
+
+  async newsFeedsAndCategories(): Promise<types.FeedsAndCategories> {
+    return this.client.newsFeedsAndCategories();
   }
 
   async coinArticles(

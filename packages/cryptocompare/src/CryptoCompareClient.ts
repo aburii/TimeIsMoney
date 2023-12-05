@@ -143,6 +143,16 @@ export class CryptoCompareClient {
     );
   }
 
+  // https://min-api.cryptocompare.com/documentation?key=News&cat=ListNewsFeedsEndpoint
+  async newsFeeds(): Promise<cctypes.Feed[]> {
+    return this.fetchRawApi<cctypes.Feed[]>(this.apiUrl("news/feeds"));
+  }
+
+  // https://min-api.cryptocompare.com/documentation?key=News&cat=ListNewsFeedsEndpoint
+  async newsCategories(): Promise<cctypes.Category[]> {
+    return this.fetchRawApi<cctypes.Category[]>(this.apiUrl("news/categories"));
+  }
+
   // https://min-api.cryptocompare.com/documentation?key=News&cat=latestNewsArticlesEndpoint
   async newsList(params?: {
     // Default: ALL_NEWS_FEEDS
