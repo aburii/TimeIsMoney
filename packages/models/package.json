@@ -8,8 +8,9 @@
   "license": "ISC",
   "scripts": {
     "build": "tsc",
-    "reset_db": "npx prisma db push --force-reset",
-    "migrate_db": "npx prisma migrate dev --name init"
+    "reset": "npx prisma db push --force-reset && npm run seed",
+    "migrate": "npx prisma migrate dev --name init",
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.2.8",

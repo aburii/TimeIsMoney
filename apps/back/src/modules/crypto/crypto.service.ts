@@ -68,11 +68,10 @@ export class CryptoService extends PrismaCrudService {
     });
   }
 
-  defaultConversionCurrency(): string {
-    return 'EUR';
-    // return this.prisma.currency.findFirst({
-    //   where: { is_crypto: false, symbol: 'EUR' },
-    // });
+  defaultConversionCurrency(): Promise<Currency> {
+    return this.prisma.currency.findFirst({
+      where: { is_crypto: false, symbol: 'EUR' },
+    });
   }
 
   async registerCryptoCurrency(symbol: string) {
@@ -98,13 +97,13 @@ export class CryptoService extends PrismaCrudService {
 
   async coinPrices(
     symbol: string,
-    destSymbol: string,
+    destSymbol: Currency,
   ): Promise<CoinSymbolPrices> {
-    return this.coinAPI.coinSymbolPrices(symbol, destSymbol);
+    return this.coinAPI.coinSymbolPrices(symbol, destSymbol.symbol);
   }
 
   async coinsPrices(
-    destSymbol: string,
+    destSymbol: Currency,
     coinsSymbols?: string[],
   ): Promise<MultiCoinsPrices> {
     const registered = await this.cryptoCurrencies();
@@ -115,16 +114,16 @@ export class CryptoService extends PrismaCrudService {
         (sym) => this.findOneBySymbol(sym) !== undefined,
       );
     }
-    return this.coinAPI.coinsPrices(coinsSymbols, [destSymbol]);
+    return this.coinAPI.coinsPrices(coinsSymbols, [destSymbol.symbol]);
   }
 
   async coinHistory(
     symbol: string,
-    dest: string,
+    dest: Currency,
     period: HistoryPeriod,
   ): Promise<CoinHistory> {
     const limit = period == HistoryPeriod.Hourly ? 48 : 60;
-    return this.coinAPI.coinHistory(symbol, dest, period, limit);
+    return this.coinAPI.coinHistory(symbol, dest.symbol, period, limit);
   }
 
   async coinArticles(symbol: string, lang?: string): Promise<Article[]> {
