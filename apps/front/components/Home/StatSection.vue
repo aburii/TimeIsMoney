@@ -1,24 +1,20 @@
 <template>
   <section
-    class="flex flex-wrap md:flex-row py-4 justify-center p-4 items-center self-stretch gap-12"
+    class="flex flex-wrap md:flex-row justify-center items-center self-stretch gap-20 py-[100px] px-6 lg:px-12"
   >
-    <HomeCustomBox :color="customColor1">
-      <p>783</p>
-      <p>Articles dans le blog</p>
+    <HomeCustomBox>
+      <p>Articles</p>
+      <p class="text-4xl">783</p>
     </HomeCustomBox>
-    <HomeCustomBox :color="customColor2">
-      <p>23 642</p>
-      <p>Crypto-monnaies disponibles</p>
+    <HomeCustomBox>
+      <p>Crypto-monnaies</p>
+      <p class="text-4xl">23 642</p>
     </HomeCustomBox>
-    <HomeCustomBox :color="customColor3">
-      <p>109</p>
+    <HomeCustomBox>
       <p>Membres inscrits</p>
+      <p class="text-4xl">109</p>
     </HomeCustomBox>
   </section>
 </template>
 
-<script setup>
-const customColor1 = "from-[#BDB2FF] from-0% to-[#1D232A] to-70%";
-const customColor2 = "from-[#a2d2ff] from-0% to-[#1D232A] to-70%";
-const customColor3 = "from-[#FFD6A5] from-0% to-[#1D232A] to-70%";
-</script>
+<script setup></script>

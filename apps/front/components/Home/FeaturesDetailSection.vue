@@ -1,6 +1,6 @@
 <template>
   <section
-    class="flex flex-col items-center py-8 md:py-16 lg:py-24 xl:py-32 gap-y-8 md:gap-y-16 lg:gap-y-24"
+    class="bg-primary text-primary-content flex flex-col items-center py-8 md:py-16 lg:py-24 xl:py-32 gap-y-8 md:gap-y-16 lg:gap-y-24"
   >
     <article
       class="w-full flex flex-col-reverse md:flex-row-reverse items-center justify-evenly gap-5"
@@ -19,8 +19,8 @@
           tendances et développements pertinents, directement depuis votre
           tableau de bord.
         </p>
-        <button class="bg-green-200 text-green-800 py-2 px-4 rounded-md">
-          Explorer plus
+        <button class="btn btn-secondary py-2 px-4 rounded-md">
+          Commencer
         </button>
       </div>
       <div class="w-full sm:w-[500px]">
@@ -47,7 +47,7 @@
           d'investissement. Suivez et gérez efficacement les monnaies de votre
           choix pour une gestion de portefeuille optimisée.
         </p>
-        <button class="bg-blue-200 text-blue-800 py-2 px-4 rounded-md">
+        <button class="btn btn-accent py-2 px-4 rounded-md">
           Explorer plus
         </button>
       </div>

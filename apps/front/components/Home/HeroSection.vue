@@ -1,6 +1,6 @@
 <template>
   <section
-    class="flex flex-col-reverse py-4 md:py-8 lg:py-16 px-2 md:px-4 justify-between items-center lg:items-stretch lg:flex-row gap-10 lg:gap-20"
+    class="flex flex-col-reverse bg-primary text-primary-content py-4 md:py-8 lg:py-16 px-8 md:px-10 lg:px-16 justify-between items-center lg:items-stretch lg:flex-row gap-10 lg:gap-20"
   >
     <div class="flex flex-col items-start gap-4 lg:gap-8 lg:w-2/3 xl:w-3/5">
       <h2 class="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-2">
@@ -14,11 +14,11 @@
         votre avenir financier dès aujourd'hui !
       </p>
       <div class="buttons flex flex-row items-center gap-4 lg:gap-8">
-        <button class="bg-blue-200 text-blue-800 py-2 px-4 rounded-md">
+        <button class="btn btn-accent py-2 px-4 rounded-md">
           Explorer plus
         </button>
 
-        <button class="bg-green-200 text-green-800 py-2 px-4 rounded-md">
+        <button class="btn btn-secondary py-2 px-4 rounded-md">
           Commencer
         </button>
       </div>

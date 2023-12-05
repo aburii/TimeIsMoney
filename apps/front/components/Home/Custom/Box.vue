@@ -1,13 +1,9 @@
 <template>
-  <div :class="`rounded-md bg-gradient-to-b ${color} p-1 min-w-[260px]`">
-    <div
-      class="bg-base-100 flex flex-col w-450 h-180 flex-col justify-center items-center gap-2 p-4 text-justify"
-    >
-      <slot />
-    </div>
+  <div
+    class="flex flex-col gap-3 uppercase pt-3 border-t border-solid border-base-content text-base-content p-1 min-w-[260px]"
+  >
+    <slot />
   </div>
 </template>
 
-<script setup>
-defineProps(["color"]);
-</script>
+<script setup></script>

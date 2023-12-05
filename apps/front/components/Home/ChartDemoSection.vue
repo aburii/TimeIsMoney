@@ -1,7 +1,9 @@
 <template>
-  <section class="flex gap-20 flex-col py-20">
+  <section
+    class="flex gap-20 flex-col py-20 px-6 lg:px-12 bg-secondary text-secondary-content"
+  >
     <div class="text-center">
-      <h2 class="text-2xl md:text-2xl lg:text-2xl xl:text-3xl font-bold mb-2">
+      <h2 class="text-2xl md:text-2xl lg:text-2xl xl:text-3xl font-bold mb-3">
         Tendances et Analyses en Temps Réel des Cryptomonnaies
       </h2>
       <p class="text-sm md:text-base lg:text-lg xl:text-xl mb-4">
@@ -11,21 +13,15 @@
       </p>
     </div>
     <div class="flex flex-wrap items-center justify-center self-stretch gap-12">
-      <HomeCustomBigBox :color="customColor1">
-        <img class="h-full" src="@/assets/img/chart1.png" alt="crypto" />
+      <HomeCustomBigBox>
+        <img class="h-full" src="@/assets/img/chart1.png" alt="graphique" />
       </HomeCustomBigBox>
-      <HomeCustomBigBox :color="customColor2">
-        <img class="h-full" src="@/assets/img/chart2.png" alt="crypto" />
+      <HomeCustomBigBox>
+        <img class="h-full" src="@/assets/img/chart2.png" alt="graphique" />
       </HomeCustomBigBox>
-      <HomeCustomBigBox :color="customColor3">
-        <img class="h-full" src="@/assets/img/chart3.png" alt="crypto" />
+      <HomeCustomBigBox>
+        <img class="h-full" src="@/assets/img/chart3.png" alt="graphique" />
       </HomeCustomBigBox>
     </div>
   </section>
 </template>
-
-<script setup>
-const customColor1 = "from-[#FDFFB6] from-0% to-[#1D232A] to-70%";
-const customColor2 = "from-[#1D232A] from-30% to-[#a2d2ff] to-100%";
-const customColor3 = "from-[#FFD6A5] from-0% to-[#1D232A] to-70%";
-</script>
