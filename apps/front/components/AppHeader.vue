@@ -29,15 +29,15 @@
       </div>
       <NuxtLink to="/" class="btn btn-ghost text-xl">
         <img src="@/assets/img/logo.png" class="max-w-[40px]" />
-        <p>The Count Of Money</p>
+        <!-- <p>The Count Of Money</p> -->
       </NuxtLink>
     </div>
     <div class="navbar-end">
       <div class="hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
           <li><NuxtLink to="/">Home</NuxtLink></li>
-          <li><NuxtLink to="/">Crypto</NuxtLink></li>
-          <li><NuxtLink to="/">News</NuxtLink></li>
+          <li><NuxtLink to="/cryptocurrencies">Cryptos</NuxtLink></li>
+          <li><NuxtLink to="/news">News</NuxtLink></li>
           <!-- CURRENCY SELECTOR IN HARD CODE TO BE IMPLEMENTED -->
           <li>
             <a @click="toggleCurrencySelector"

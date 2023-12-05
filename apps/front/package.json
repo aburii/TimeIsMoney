@@ -10,7 +10,9 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@timeismoney/ui-components": "*"
+    "@timeismoney/ui-components": "*",
+    "apexcharts": "^3.44.0",
+    "vue3-apexcharts": "^1.4.4"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",

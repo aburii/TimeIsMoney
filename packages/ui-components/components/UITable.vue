@@ -12,9 +12,8 @@ defineProps<{
     <thead>
       <tr>
         <th v-for="heading in tableData.heading" :key="heading.key">
-          {{ heading.label }}
+          <span class="text-xl font-bold"> {{ heading.label }}</span>
         </th>
-        <th>Actions</th>
       </tr>
     </thead>
     <tbody v-if="tableData.data.length > 0">
@@ -29,9 +28,9 @@ defineProps<{
         >
           <slot :name="heading.key" :data="data" />
         </td>
-        <td>
+        <!-- <td>
           <slot name="actions" />
-        </td>
+        </td> -->
       </tr>
     </tbody>
     <tbody v-else>

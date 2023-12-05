@@ -1,6 +1,8 @@
 <template>
   <div class="fixed inset-x-0 top-36 flex justify-center items-start z-50">
-    <div class="bg-base-200 rounded-xl w-fit p-6 relative">
+    <div
+      class="bg-base-200 border border-primary rounded-xl w-fit p-6 relative"
+    >
       <button
         @click="$emit('close')"
         class="absolute top-4 right-6 text-lg font-semibold"
@@ -14,7 +16,7 @@
         class="input-sm rounded-lg mb-6 w-full"
       />
       <div class="grid grid-cols-4 gap-4">
-        <button class="btn rounded-xl flex bg-base-100 p-2">
+        <button class="btn btn-primary rounded-xl flex p-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -31,7 +33,7 @@
           </svg>
           GDB
         </button>
-        <button class="btn rounded-xl flex bg-base-100 p-2">
+        <button class="btn btn-primary rounded-xl flex p-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -48,7 +50,7 @@
           </svg>
           DOLLAR
         </button>
-        <button class="btn rounded-xl flex bg-base-100 p-2">
+        <button class="btn btn-primary rounded-xl flex p-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
