@@ -20,8 +20,9 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
         break;
       }
       default:
-        // default 500 error code
-        super.catch(exception, host);
+        response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          message: message,
+        });
         break;
     }
   }
