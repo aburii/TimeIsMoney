@@ -1,7 +1,7 @@
 <template>
   <section class="flex flex-col bg-accent text-accent-content">
     <hr class="w-full border-t border-solid border-accent-content" />
-    <div class="flex gap-5">
+    <div class="flex flex-col lg:flex-row gap-5">
       <div>
         <h2 class="text-lg md:text-xl lg:text-2xl xl:text-3xl font-light my-5">
           Notre Communauté
