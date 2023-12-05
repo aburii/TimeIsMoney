@@ -70,11 +70,15 @@ export class CryptoController {
   async history(
     @Param('symbol') symbol: string,
     @Param('period', new ParseEnumPipe(HistoryPeriod)) period: HistoryPeriod,
+    @Query('limit', ParseIntPipe) limit?: number,
+    @Query('aggregate', ParseIntPipe) aggregate?: number,
   ) {
     return this.cryptoService.coinHistory(
       symbol,
       await this.cryptoService.defaultConversionCurrency(),
       period,
+      limit,
+      aggregate,
     );
   }
 

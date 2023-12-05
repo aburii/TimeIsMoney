@@ -129,9 +129,17 @@ export class CryptoService extends PrismaCrudService {
     symbol: string,
     dest: Currency,
     period: HistoryPeriod,
+    limit?: number,
+    aggregate: number = 1,
   ): Promise<CoinHistory> {
-    const limit = period == HistoryPeriod.Hourly ? 48 : 60;
-    return this.coinAPI.client.coinHistory(symbol, dest.symbol, period, limit);
+    if (limit === undefined) limit = period == HistoryPeriod.Hourly ? 48 : 60;
+    return this.coinAPI.client.coinHistory(
+      symbol,
+      dest.symbol,
+      period,
+      limit,
+      aggregate,
+    );
   }
 
   async coinArticles(symbol: string, lang?: string): Promise<Article[]> {
