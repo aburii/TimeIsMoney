@@ -12,12 +12,11 @@ import {
 } from '@timeismoney/coinapi';
 import { PrismaCrudService } from 'nestjs-prisma-crud';
 import { Currency } from '@prisma/client';
+import { CoinApiService } from '../coinapi/coinapi.service';
 
 @Injectable()
 export class CryptoService extends PrismaCrudService {
-  private readonly coinAPI: CoinAPI = new CoinAPI(process.env.API_KEY);
-
-  constructor() {
+  constructor(private readonly coinAPI: CoinApiService) {
     super({
       model: 'currency',
       allowedJoins: [],
@@ -76,7 +75,7 @@ export class CryptoService extends PrismaCrudService {
   }
 
   async registerCurrency(symbol: string) {
-    const coinInfos = await this.coinAPI.coinInformationsShort(symbol);
+    const coinInfos = await this.coinAPI.client.coinInformationsShort(symbol);
     return await this.prisma.currency.create({
       data: {
         name: coinInfos.fullname,
@@ -89,26 +88,26 @@ export class CryptoService extends PrismaCrudService {
   }
 
   async listApiFiatCurrencies() {
-    return this.coinAPI.listFiats();
+    return this.coinAPI.client.listFiats();
   }
 
   async listApiCurrencies() {
-    return this.coinAPI.listCoins();
+    return this.coinAPI.client.listCoins();
   }
 
   async coinSummary(symbol: string): Promise<CoinInformationsShort> {
-    return this.coinAPI.coinInformationsShort(symbol);
+    return this.coinAPI.client.coinInformationsShort(symbol);
   }
 
   async coinDetails(symbol: string): Promise<CoinInformations> {
-    return this.coinAPI.coinInformations(symbol);
+    return this.coinAPI.client.coinInformations(symbol);
   }
 
   async coinPrices(
     symbol: string,
     destSymbol: Currency,
   ): Promise<CoinSymbolPrices> {
-    return this.coinAPI.coinSymbolPrices(symbol, destSymbol.symbol);
+    return this.coinAPI.client.coinSymbolPrices(symbol, destSymbol.symbol);
   }
 
   async coinsPrices(
@@ -123,7 +122,7 @@ export class CryptoService extends PrismaCrudService {
         (sym) => this.findOneBySymbol(sym) !== undefined,
       );
     }
-    return this.coinAPI.coinsPrices(coinsSymbols, [destSymbol.symbol]);
+    return this.coinAPI.client.coinsPrices(coinsSymbols, [destSymbol.symbol]);
   }
 
   async coinHistory(
@@ -132,16 +131,16 @@ export class CryptoService extends PrismaCrudService {
     period: HistoryPeriod,
   ): Promise<CoinHistory> {
     const limit = period == HistoryPeriod.Hourly ? 48 : 60;
-    return this.coinAPI.coinHistory(symbol, dest.symbol, period, limit);
+    return this.coinAPI.client.coinHistory(symbol, dest.symbol, period, limit);
   }
 
   async coinArticles(symbol: string, lang?: string): Promise<Article[]> {
-    return this.coinAPI.coinArticles(symbol, lang);
+    return this.coinAPI.client.coinArticles(symbol, lang);
   }
 
   async coinSocialStats(symbol: string): Promise<SocialStats> {
     const coin = await this.findOneBySymbol(symbol);
 
-    return this.coinAPI.coinSocialStats(coin.api_id);
+    return this.coinAPI.client.coinSocialStats(coin.api_id);
   }
 }
