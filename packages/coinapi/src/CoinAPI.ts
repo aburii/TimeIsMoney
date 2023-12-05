@@ -19,6 +19,7 @@ export class CoinAPI {
     coin: cc.CoinInformationShort
   ): types.CoinInformationsShort {
     return {
+      is_fiat: false,
       id: coin.Id,
       fullname: coin.FullName,
       imageUrl: `https://www.cryptocompare.com/${coin.ImageUrl}`,
@@ -223,6 +224,32 @@ export class CoinAPI {
     };
   }
 
+  private convertCCAssetSummaryToCoinShort(
+    assetSummary: cc.AssetSummary
+  ): types.CoinInformationsShort {
+    return {
+      id: assetSummary.ID,
+      symbol: assetSummary.SYMBOL,
+      fullname: assetSummary.NAME,
+      imageUrl: assetSummary.LOGO_URL,
+      is_fiat: assetSummary.ASSET_TYPE == cc.AssetType.Fiat,
+    };
+  }
+
+  async listFiats(): Promise<types.CoinInformationsShort[]> {
+    const fiats = await this.client.fiatList();
+
+    return fiats.map(this.convertCCAssetSummaryToCoinShort);
+  }
+
+  async coinInformationsShort(
+    symbol: string
+  ): Promise<types.CoinInformationsShort> {
+    return this.convertCCAssetSummaryToCoinShort(
+      await this.client.getAssetBySymbol({ asset_symbol: symbol })
+    );
+  }
+
   async listCoins(): Promise<types.CoinInformationsShort[]> {
     const coins: cc.CoinsInformationsShort = await this.client.coinList({
       summary: true,
@@ -234,21 +261,6 @@ export class CoinAPI {
       informations.push(this.convertCCCoinInformationShort(coin));
     }
     return informations;
-  }
-
-  async coinInformationsShort(
-    coinSymbol: string
-  ): Promise<types.CoinInformationsShort | undefined> {
-    const coins: cc.CoinsInformationsShort = await this.client.coinList({
-      fsym: coinSymbol,
-      summary: true,
-    });
-
-    for (const sym in coins) {
-      const coin = coins[sym];
-      return this.convertCCCoinInformationShort(coin);
-    }
-    return undefined;
   }
 
   async coinInformations(

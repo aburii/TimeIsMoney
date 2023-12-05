@@ -4,6 +4,7 @@ import {
   CoinAPI,
   CoinHistory,
   CoinInformations,
+  CoinInformationsShort,
   CoinSymbolPrices,
   HistoryPeriod,
   MultiCoinsPrices,
@@ -74,21 +75,29 @@ export class CryptoService extends PrismaCrudService {
     });
   }
 
-  async registerCryptoCurrency(symbol: string) {
+  async registerCurrency(symbol: string) {
     const coinInfos = await this.coinAPI.coinInformationsShort(symbol);
     return await this.prisma.currency.create({
       data: {
         name: coinInfos.fullname,
         symbol: coinInfos.symbol,
         api_id: +coinInfos.id,
-        is_crypto: true,
+        is_crypto: !coinInfos.is_fiat,
         image_url: coinInfos.imageUrl,
       },
     });
   }
 
+  async listApiFiatCurrencies() {
+    return this.coinAPI.listFiats();
+  }
+
   async listApiCurrencies() {
     return this.coinAPI.listCoins();
+  }
+
+  async coinSummary(symbol: string): Promise<CoinInformationsShort> {
+    return this.coinAPI.coinInformationsShort(symbol);
   }
 
   async coinDetails(symbol: string): Promise<CoinInformations> {

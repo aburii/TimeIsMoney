@@ -54,6 +54,7 @@ export interface CoinInformationsShort {
   fullname: string;
   symbol: string;
   imageUrl: string;
+  is_fiat: boolean;
 }
 
 export interface CoinInformations extends CoinInformationsShort {

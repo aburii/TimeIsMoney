@@ -2,6 +2,7 @@ import * as cctypes from "./types";
 
 export class CryptoCompareClient {
   static baseUrl: string = "https://min-api.cryptocompare.com/data/";
+  static assetBaseUrl: string = "https://data-api.cryptocompare.com/asset/";
   apiKey: string;
 
   constructor(apiKey: string) {
@@ -39,6 +40,12 @@ export class CryptoCompareClient {
     });
   }
 
+  private async fetchAssetApi<DataType>(url: string): Promise<DataType> {
+    return this.fetchJSON(url).then((body) => {
+      return body.Data as DataType;
+    });
+  }
+
   private objectToUrlSearchParams(obj: any): URLSearchParams {
     const params = new URLSearchParams();
     for (const property in obj) {
@@ -49,9 +56,10 @@ export class CryptoCompareClient {
 
   private apiUrl(
     endpoint: string,
-    queryParams?: URLSearchParams | any
+    queryParams?: URLSearchParams | any,
+    baseUrl: string = CryptoCompareClient.baseUrl
   ): string {
-    const url = `${CryptoCompareClient.baseUrl}${endpoint}`;
+    const url = `${baseUrl}${endpoint}`;
     const searchParams: URLSearchParams = queryParams
       ? queryParams instanceof URLSearchParams
         ? queryParams
@@ -62,6 +70,37 @@ export class CryptoCompareClient {
 
     if (url.indexOf("?") > -1) return `${url}&${searchParams}`;
     else return `${url}?${searchParams}`;
+  }
+
+  private assetApiUrl(
+    endpoint: string,
+    queryParams?: URLSearchParams | any
+  ): string {
+    return this.apiUrl(endpoint, queryParams, CryptoCompareClient.assetBaseUrl);
+  }
+
+  // https://data-api.cryptocompare.com/asset/v1/summary/list?asset_type=BLOCKCHAIN
+  async assetList(params?: {
+    asset_type?: cctypes.AssetType;
+    filters?: string[];
+  }): Promise<cctypes.AssetSummary[]> {
+    return (
+      await this.fetchAssetApi<cctypes.AssetSummaries>(
+        this.assetApiUrl("v1/summary/list", params)
+      )
+    ).LIST;
+  }
+
+  async fiatList(filters?: string[]): Promise<cctypes.AssetSummary[]> {
+    return this.assetList({ asset_type: cctypes.AssetType.Fiat, filters });
+  }
+
+  async getAssetBySymbol(params: {
+    asset_symbol: string;
+  }): Promise<cctypes.AssetSummary> {
+    return this.fetchAssetApi<cctypes.AssetSummary>(
+      this.assetApiUrl("v1/data/by/symbol", params)
+    );
   }
 
   // https://min-api.cryptocompare.com/documentation?key=Other&cat=allCoinsWithContentEndpoint
@@ -171,3 +210,5 @@ export class CryptoCompareClient {
     return this.fetchApi<cctypes.Article[]>(this.apiUrl("v2/news/", params));
   }
 }
+
+// https://data-api.cryptocompare.com/asset/v1/summary/list?asset_type=FIAT

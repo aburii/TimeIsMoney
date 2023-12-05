@@ -19,6 +19,11 @@ import { CreateCurrencyDto, UpdateCurrencyDto } from '@timeismoney/dto';
 export class CryptoController {
   constructor(private readonly cryptoService: CryptoService) {}
 
+  @Get('api-fiat-currencies')
+  async listApiFiatCurrencies() {
+    return this.cryptoService.listApiFiatCurrencies();
+  }
+
   @Get('api-currencies')
   async listApiCurrencies() {
     return this.cryptoService.listApiCurrencies();
@@ -26,7 +31,12 @@ export class CryptoController {
 
   @Post('register/:symbol')
   async registerCryptoCurrency(@Param('symbol') symbol: string) {
-    return this.cryptoService.registerCryptoCurrency(symbol);
+    return this.cryptoService.registerCurrency(symbol);
+  }
+
+  @Get(':symbol/summary')
+  async summary(@Param('symbol') symbol: string) {
+    return this.cryptoService.coinSummary(symbol);
   }
 
   @Get(':symbol/details')

@@ -2,27 +2,12 @@ import { Currency, PrismaClient } from "@prisma/client";
 import { hash } from "@timeismoney/security/dist";
 const prisma = new PrismaClient();
 
-async function createFiatCurrency(
-  name: string,
-  symbol: string,
-): Promise<Currency> {
-  return prisma.currency.upsert({
-    where: { symbol: symbol },
-    update: {},
-    create: {
-      name: name,
-      symbol: symbol,
-      api_id: null,
-      is_crypto: false,
-    },
-  });
-}
-
-async function createCryptoCurrency(
+async function createCurrency(
   name: string,
   symbol: string,
   id: number,
-  image_url?: string,
+  is_crypto: boolean,
+  image_url: string
 ): Promise<Currency> {
   return prisma.currency.upsert({
     where: { symbol: symbol },
@@ -31,44 +16,78 @@ async function createCryptoCurrency(
       name: name,
       symbol: symbol,
       api_id: id,
-      is_crypto: true,
-      image_url: "https://www.cryptocompare.com/" + image_url,
+      is_crypto: is_crypto,
+      image_url: image_url,
     },
   });
 }
 
+async function createFiatCurrency(
+  name: string,
+  symbol: string,
+  id: number,
+  image_url: string
+): Promise<Currency> {
+  return createCurrency(name, symbol, id, false, image_url);
+}
+
+async function createCryptoCurrency(
+  name: string,
+  symbol: string,
+  id: number,
+  image_url: string
+): Promise<Currency> {
+  return createCurrency(
+    name,
+    symbol,
+    id,
+    true,
+    "https://www.cryptocompare.com/" + image_url
+  );
+}
+
 async function seedCurrencies(): Promise<Currency> {
-  const defaultCurrency = createFiatCurrency("Euro (EUR)", "EUR");
-  await createFiatCurrency("US Dollar (USD)", "USD");
+  const defaultCurrency = createFiatCurrency(
+    "Euro (EUR)",
+    "EUR",
+    1748,
+    "https://resources.cryptocompare.com/asset-management/1748/1674482812577.png"
+  );
+  await createFiatCurrency(
+    "US Dollar (USD)",
+    "USD",
+    5,
+    "https://resources.cryptocompare.com/asset-management/5/1661245162644.png"
+  );
   await createCryptoCurrency(
     "Bitcoin (BTC)",
     "BTC",
     1182,
-    "/media/37746251/btc.png",
+    "/media/37746251/btc.png"
   );
   await createCryptoCurrency(
     "Dogecoin (DOGE)",
     "DOGE",
     4432,
-    "/media/37746339/doge.png",
+    "/media/37746339/doge.png"
   );
   await createCryptoCurrency(
     "Memecoin (MEME)",
     "MEME",
     954076,
-    "/media/44154224/meme.png",
+    "/media/44154224/meme.png"
   );
   await createCryptoCurrency(
     "Ethereum (ETH)",
     "ETH",
     7605,
-    "/media/37746238/eth.png",
+    "/media/37746238/eth.png"
   );
   await createCryptoCurrency(
     "Solana (SOL)",
     "SOL",
     934443,
-    "/media/37747734/sol.png",
+    "/media/37747734/sol.png"
   );
   return defaultCurrency;
 }
@@ -80,7 +99,7 @@ async function createUser(
   email: string,
   password: string,
   currency: Currency,
-  role: "ADMIN" | "CLIENT",
+  role: "ADMIN" | "CLIENT"
 ) {
   return prisma.user.upsert({
     where: { email: email },
@@ -106,7 +125,7 @@ async function seedUsers(defaultConversionCurrency: Currency) {
     "admin@timeismoney.com",
     await hash("password"),
     defaultConversionCurrency,
-    "ADMIN",
+    "ADMIN"
   );
   await createUser(
     "user",
@@ -115,7 +134,7 @@ async function seedUsers(defaultConversionCurrency: Currency) {
     "user@timeismoney.com",
     await hash("password"),
     defaultConversionCurrency,
-    "CLIENT",
+    "CLIENT"
   );
 }
 
