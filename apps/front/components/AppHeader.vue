@@ -1,5 +1,5 @@
 <template>
-  <header class="navbar base-content lg:px-12">
+  <header class="navbar lg:px-12">
     <div class="navbar-start">
       <div class="dropdown">
         <label tabindex="0" class="btn btn-ghost lg:hidden">
@@ -79,7 +79,8 @@
         </ul>
         <div class="divider lg:divider-horizontal"></div>
       </div>
-      <NuxtLink to="/login" class="btn">Login</NuxtLink>
+
+      <NuxtLink to="/login" class="btn btn-primary">Login</NuxtLink>
     </div>
   </header>
 </template>
