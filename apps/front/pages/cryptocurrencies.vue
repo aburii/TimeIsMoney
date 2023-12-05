@@ -22,6 +22,7 @@
     <div class="overflow-x-auto border rounded-xl border-base-300">
       <UITable id="table" class="table" :table-data="dataTable">
         <template #name="data">
+          <Star />
           <NuxtLink :to="`/cryptocurrency/${data.data.name}`">
             <span class="font-bold">{{ data.data.name }}</span>
             <span class="ml-2">{{ data.data.symbol }}</span>
