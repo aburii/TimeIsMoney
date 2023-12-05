@@ -30,7 +30,7 @@ async function createCryptoCurrency(
       name: name,
       symbol: symbol,
       api_id: id,
-      is_crypto: false,
+      is_crypto: true,
       image_url: "https://www.cryptocompare.com/" + image_url,
     },
   });

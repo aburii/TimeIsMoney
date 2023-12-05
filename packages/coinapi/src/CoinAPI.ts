@@ -2,6 +2,12 @@ import { CryptoCompareClient } from "@timeismoney/cryptocompare";
 import * as cc from "@timeismoney/cryptocompare";
 import * as types from "./types";
 
+function convertTimestampToISODate(timestamp: number): string {
+  const date = new Date(timestamp * 1000); // Convert seconds to milliseconds
+  const isoDate = date.toISOString();
+  return isoDate;
+}
+
 export class CoinAPI {
   client: CryptoCompareClient;
 
@@ -75,6 +81,7 @@ export class CoinAPI {
   private convertCCOHLCV(ohlcv: cc.OHLCV): types.OHLCV {
     return {
       time: ohlcv.time,
+      timeIso: convertTimestampToISODate(ohlcv.time),
       open: ohlcv.open,
       high: ohlcv.high,
       low: ohlcv.low,
@@ -82,7 +89,7 @@ export class CoinAPI {
       volume: ohlcv.volumefrom,
       volumeCoin: ohlcv.volumeto,
       change: ohlcv.close - ohlcv.open,
-      changePercent: (ohlcv.close - ohlcv.open) / ohlcv.open,
+      changePercent: ((ohlcv.close - ohlcv.open) / ohlcv.open) * 100,
     };
   }
 
@@ -93,7 +100,9 @@ export class CoinAPI {
     return {
       period: period,
       timeFrom: history.TimeFrom,
+      timeFromIso: convertTimestampToISODate(history.TimeFrom),
       timeTo: history.TimeTo,
+      timeToIso: convertTimestampToISODate(history.TimeTo),
       history: history.Data.map(this.convertCCOHLCV),
     };
   }

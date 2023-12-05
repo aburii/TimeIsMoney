@@ -80,7 +80,7 @@ export class CryptoService extends PrismaCrudService {
       data: {
         name: coinInfos.fullname,
         symbol: coinInfos.symbol,
-        api_id: coinInfos.id,
+        api_id: +coinInfos.id,
         is_crypto: true,
         image_url: coinInfos.imageUrl,
       },

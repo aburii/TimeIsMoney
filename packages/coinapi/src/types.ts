@@ -10,6 +10,7 @@ export interface OHLV {
 
 export interface OHLCV extends OHLV {
   time: number;
+  timeIso: string;
   close: number;
 }
 
@@ -22,7 +23,9 @@ export enum HistoryPeriod {
 export interface CoinHistory {
   period: HistoryPeriod;
   timeFrom: number;
+  timeFromIso: string;
   timeTo: number;
+  timeToIso: string;
   history: OHLCV[];
 }
 

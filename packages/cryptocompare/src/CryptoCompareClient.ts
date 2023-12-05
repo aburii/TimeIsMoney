@@ -122,7 +122,7 @@ export class CryptoCompareClient {
     }
   ): Promise<cctypes.OHLCVHistory> {
     return this.fetchApi<cctypes.OHLCVHistory>(
-      this.apiUrl(`v2/histo${period}/`, params)
+      this.apiUrl(`v2/histo${period}`, params)
     );
   }
 
