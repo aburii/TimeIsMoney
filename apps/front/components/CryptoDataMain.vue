@@ -37,7 +37,9 @@
       id="charts"
       class="flex flex-row items-center sm:flex-row justify-between m-2 sm:m-8"
     >
-      <div class="bg-base-200 p-2 rounded-xl border border-base-300 shadow my-2 sm:my-0">
+      <div
+        class="bg-base-200 p-2 rounded-xl border border-base-300 shadow my-2 sm:my-0"
+      >
         <span
           @click="selectedChartType = 'line'"
           :class="[
@@ -56,7 +58,9 @@
         >
       </div>
 
-      <div class="bg-base-200 p-2 rounded-xl border border-base-300 shadow my-2 sm:my-0">
+      <div
+        class="bg-base-200 p-2 rounded-xl border border-base-300 shadow my-2 sm:my-0"
+      >
         <span
           @click="selectedChartPeriode = '1D'"
           :class="[
@@ -103,6 +107,7 @@
       <div
         class="mx-4 mb-8 bg-base-200 rounded-xl p-4 mb-4 border border-base-300 shadow"
         v-for="n in 10"
+        :key="n"
       >
         <div class="">
           <div class="text-xs mb-2">{{ n * 2 }} minutes ago</div>
@@ -118,24 +123,24 @@
 
     <div class="w-full h-full rounded-xl px-4">
       <div
-        className="collapse collapse-arrow bg-base-200 border border-primary mb-4"
+        class="collapse collapse-arrow bg-base-200 border border-primary mb-4"
       >
         <input type="radio" name="my-accordion-2" checked="checked" />
-        <div className="collapse-title text-xl font-medium">
+        <div class="collapse-title text-xl font-medium">
           What is {{ $route.params.crypto }} ?
         </div>
-        <div className="collapse-content">
+        <div class="collapse-content">
           <p>info</p>
         </div>
       </div>
       <div
-        className="collapse collapse-arrow bg-base-200 border border-primary mb-4"
+        class="collapse collapse-arrow bg-base-200 border border-primary mb-4"
       >
         <input type="radio" name="my-accordion-2" />
-        <div className="collapse-title text-xl font-medium">
+        <div class="collapse-title text-xl font-medium">
           Who created {{ $route.params.crypto }} ?
         </div>
-        <div className="collapse-content">
+        <div class="collapse-content">
           <p>info</p>
         </div>
       </div>

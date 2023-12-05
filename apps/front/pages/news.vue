@@ -6,7 +6,7 @@
     <div class="w-full rounded-xl">
       <div
         class="mx-4 mb-8 bg-base-200 rounded-xl p-4 mb-4 border border-base-300 shadow"
-        v-for="n in 5"
+        v-for="n in 5" :key="n"
       >
         <div class="">
           <div class="text-xs mb-2">{{ n * 2 }} minutes ago</div>
