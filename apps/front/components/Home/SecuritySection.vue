@@ -1,11 +1,11 @@
 <template>
   <section>
     <h2
-      class="text-base-content w-full border-t border-solid border-base-content mb-20 text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold pt-4"
+      class="text-base-content w-full border-t border-solid border-base-content mb-12 sm:mb-20 text-2xl md:text-3xl lg:text-3xl xl:text-4xl font-bold pt-4"
     >
       Sécurité et fiabilité
     </h2>
-    <div class="flex gap-10">
+    <div class="flex flex-col sm:flex-row gap-10">
       <article
         class="w-full border border-solid border-base-content p-5 rounded-sm"
       >
