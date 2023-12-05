@@ -1,5 +1,5 @@
 <template>
-  <div class="container flex flex-col mx-auto rounded-lg my-5">
+  <div class="container flex flex-col m-auto">
     <div
       class="flex justify-center w-full h-full my-auto xl:gap-14 lg:justify-normal md:gap-5"
     >
@@ -13,7 +13,7 @@
             </h3>
             <p class="mb-4 text-grey-700">Enter an email and password</p>
             <a
-              class="btn flex items-center justify-center w-full py-4 mb-6 text-sm font-medium transition duration-300 rounded-2xl text-grey-900 bg-grey-300 hover:bg-grey-400 focus:ring-4 focus:ring-grey-300"
+              class="btn btn-accent flex items-center justify-center w-full mb-6 text-sm font-medium transition duration-300 rounded-2xl text-grey-900 bg-grey-300 hover:bg-grey-400 focus:ring-4 focus:ring-grey-300"
             >
               <img
                 class="h-5 mr-2"
@@ -34,7 +34,7 @@
               id="email"
               type="email"
               placeholder="name@email.com"
-              class="flex items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
+              class="flex items-center w-full px-5 py-4 text-sm font-medium outline-none focus:bg-grey-400 mb-5 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
             />
             <label for="password" class="mb-2 text-sm text-start text-grey-900"
               >Password*</label
@@ -43,21 +43,26 @@
               id="password"
               type="password"
               placeholder="Enter a password"
-              class="flex items-center w-full px-5 py-4 mb-5 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
+              class="flex items-center w-full px-5 py-4 mb-5 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
             />
             <button
-              class="btn w-full px-6 py-5 mb-5 text-sm font-bold text-grey-900 md:w-96 rounded-2xl"
+              class="btn btn-primary w-full px-6 my-5 text-sm font-bold text-grey-900 md:w-96 rounded-2xl"
             >
               Sign Up
             </button>
-            <p class="text-sm leading-relaxed text-grey-900">
-              Allready have an account?
-              <NuxtLink to="/login" class="justify-self-end"
-                ><a class="font-bold text-grey-700"
-                  >Login</a
-                ></NuxtLink
-              >
-            </p>
+            <div>
+              <p class="text-sm leading-relaxed text-grey-900">
+                Already have an account?
+                <NuxtLink to="/login" class="justify-self-end"
+                  ><a class="font-bold text-grey-700">Login</a></NuxtLink
+                >
+              </p>
+              <p class="text-sm leading-relaxed text-grey-900">
+                <NuxtLink to="/mentions" class="justify-self-end"
+                  ><a class="text-grey-700">Mentions légales et CGU</a>
+                </NuxtLink>
+              </p>
+            </div>
           </form>
         </div>
       </div>
