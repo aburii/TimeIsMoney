@@ -20,7 +20,7 @@
         </label>
         <ul
           tabindex="0"
-          class="bg-primary text-primary-content menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52 rounded-tl-none"
+          class="bg-base-100 text-base-content menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52 rounded-tl-none"
         >
           <li><NuxtLink to="/">Home</NuxtLink></li>
           <li><NuxtLink to="/cryptocurrencies">Cryptos</NuxtLink></li>
