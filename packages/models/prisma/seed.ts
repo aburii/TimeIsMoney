@@ -102,7 +102,7 @@ async function seedUsers(defaultConversionCurrency: Currency) {
   await createUser(
     "admin",
     "admin",
-    "aadmin",
+    "admin",
     "admin@timeismoney.com",
     await hash("password"),
     defaultConversionCurrency,
@@ -112,14 +112,14 @@ async function seedUsers(defaultConversionCurrency: Currency) {
     "user",
     "user",
     "user",
-    "user@timeismoney.fr",
+    "user@timeismoney.com",
     await hash("password"),
     defaultConversionCurrency,
     "CLIENT",
   );
 }
 
-function main() {
+async function main() {
   const defCurrency = await seedCurrencies();
   return seedUsers(defCurrency);
 }
