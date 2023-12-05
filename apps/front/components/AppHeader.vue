@@ -28,7 +28,7 @@
         </ul>
       </div>
       <NuxtLink to="/" class="btn btn-ghost text-xl">
-        <img src="@/assets/img/logo.png" class="max-w-[40px]">
+        <img src="@/assets/img/logo.png" class="max-w-[40px]" />
         <p>The Count Of Money</p>
       </NuxtLink>
     </div>
@@ -42,7 +42,7 @@
         <div class="divider lg:divider-horizontal"></div>
       </div>
 
-      <NuxtLink to="/" class="btn">Login</NuxtLink>
+      <NuxtLink to="/login" class="btn">Login</NuxtLink>
     </div>
   </div>
 </template>
