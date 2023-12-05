@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 mx-auto w-full md:w-4/5">
+  <div class="py-4 md:py-8 lg:py-16 px-8 md:px-10 lg:px-16">
     <div class="text-4xl mb-10 font-semibold">
       Today's Cryptocurrency Prices by Market Cap
     </div>

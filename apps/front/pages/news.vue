@@ -1,12 +1,11 @@
-<script setup lang="ts"></script>
-
 <template>
-  <div class="p-4 mx-auto w-full md:w-4/5">
+  <div class="py-4 md:py-8 lg:py-16 px-8 md:px-10 lg:px-16">
     <div class="text-4xl mb-10 font-semibold">Cryptocurrency News</div>
     <div class="w-full rounded-xl">
       <div
-        class="mx-4 mb-8 bg-base-200 rounded-xl p-4 mb-4 border border-base-300 shadow"
-        v-for="n in 5" :key="n"
+        class="mb-8 bg-base-200 rounded-xl p-4 mb-4 border border-base-300 shadow"
+        v-for="n in 5"
+        :key="n"
       >
         <div class="">
           <div class="text-xs mb-2">{{ n * 2 }} minutes ago</div>
@@ -25,5 +24,3 @@
     </div>
   </div>
 </template>
-
-<style scoped lang="scss"></style>
