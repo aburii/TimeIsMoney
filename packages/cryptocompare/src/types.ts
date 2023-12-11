@@ -336,3 +336,32 @@ export interface Article {
   source_info: SourceInfo;
   source: string;
 }
+
+export enum AssetType {
+  BlockChain = "BLOCKCHAIN",
+  Fiat = "FIAT",
+  Token = "TOKEN",
+  Stock = "STOCK",
+  Index = "INDEX",
+  Commodity = "COMMODITY",
+}
+
+export interface AssetSummary {
+  ID: number;
+  SYMBOL: string;
+  ASSET_TYPE: AssetType;
+  NAME: string;
+  LOGO_URL: string;
+}
+
+export interface AssetSummaries {
+  STATS: {
+    TOTAL_ASSETS: number;
+    TOTAL_FILTERED_ASSETS: number;
+  };
+  LIST: AssetSummary[];
+}
+
+export interface AssetSummariesDto {
+  Data: AssetSummaries;
+}

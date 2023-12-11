@@ -27,6 +27,8 @@ model User {
   currency                 Currency?                @relation(references: [id], onDelete: NoAction, fields: [currencyId])
   currencyId               Int?
   followedCryptoCurrencies UserFollowedCurrencies[]
+
+  role Role @default(CLIENT)
 }
 
 model Currency {
@@ -58,4 +60,9 @@ model UserFollowedCurrencies {
 enum App {
   FRONT
   BO
+}
+
+enum Role {
+  ADMIN
+  CLIENT
 }

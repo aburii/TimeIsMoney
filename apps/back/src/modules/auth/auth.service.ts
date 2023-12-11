@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { User } from '@prisma/client';
@@ -33,6 +37,7 @@ export class AuthService {
   }
 
   async login(userId: number, app: App): Promise<ITokens> {
+    await this.checkUserAppPermission(userId, app);
     const tokens = await this.generateTokens(userId, app);
     await this.updateUserRefresh(userId, tokens.refreshToken);
     return tokens;
@@ -96,5 +101,13 @@ export class AuthService {
 
   async removeUserRefresh(userId: number) {
     return this.userService.updateOne(userId, { refresh: '' });
+  }
+
+  async checkUserAppPermission(userId: number, app: App) {
+    const { role } = await this.userService.findOne(userId);
+
+    if (app === App.BO && role !== 'ADMIN') {
+      throw new ForbiddenException();
+    }
   }
 }

@@ -9,8 +9,8 @@ const sessionStore = useSessionStore();
 
 const login = async () => {
   const response = await sessionStore.login({
-    email: "email@email.com",
-    password: "superpassword",
+    email: "user@timeismoney.com",
+    password: "password",
     app: "BO" as any,
   });
 
