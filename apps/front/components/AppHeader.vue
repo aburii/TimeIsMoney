@@ -76,7 +76,12 @@
         </ul>
         <div class="divider lg:divider-horizontal"></div>
       </div>
-      <NuxtLink to="/" class="btn">Login</NuxtLink>
+      <div class="mx-2">
+        <NuxtLink v-if:="!session.isLoggedIn" to="/login" class="btn btn-sm btn-primary"
+          >Login</NuxtLink
+        >
+        <Logout />
+      </div>
     </div>
   </div>
   <currencySelector
@@ -85,17 +90,14 @@
   />
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      isCurrencySelectorVisible: false,
-    };
-  },
-  methods: {
-    toggleCurrencySelector() {
-      this.isCurrencySelectorVisible = !this.isCurrencySelectorVisible;
-    },
-  },
+<script setup>
+import { ref } from "vue";
+import { useSessionStore } from "~/stores/session";
+const session = useSessionStore();
+
+const isCurrencySelectorVisible = ref(false);
+
+const toggleCurrencySelector = () => {
+  isCurrencySelectorVisible.value = !isCurrencySelectorVisible.value;
 };
 </script>

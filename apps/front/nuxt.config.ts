@@ -13,4 +13,9 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  runtimeConfig: {
+    public: {
+      BACK_URL: "http://localhost:8080/api",
+    },
+  },
 });

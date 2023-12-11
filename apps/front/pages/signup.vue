@@ -13,7 +13,7 @@
             </h3>
             <p class="mb-4 text-grey-700">Enter an email and password</p>
             <a
-              class="btn flex items-center justify-center w-full py-4 mb-6 text-sm font-medium transition duration-300 rounded-2xl text-grey-900 bg-grey-300 hover:bg-grey-400 focus:ring-4 focus:ring-grey-300"
+              class="btn btn-base-300 flex items-center justify-center w-full py-4 mb-6 text-sm font-medium transition duration-300 rounded-2xl focus:ring-4 focus:ring-grey-300"
             >
               <img
                 class="h-5 mr-2"
@@ -27,6 +27,24 @@
               <p class="mx-4 text-grey-600">or</p>
               <hr class="h-0 border-b border-solid border-grey-500 grow" />
             </div>
+            <label for="email" class="mb-2 text-sm text-start text-grey-900"
+              >First Name*</label
+            >
+            <input
+              id="first_name"
+              type="name"
+              placeholder="Firstname"
+              class="flex items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
+            />
+            <label for="email" class="mb-2 text-sm text-start text-grey-900"
+              >Last Name*</label
+            >
+            <input
+              id="last_name"
+              type="name"
+              placeholder="Lastname"
+              class="flex items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
+            />
             <label for="email" class="mb-2 text-sm text-start text-grey-900"
               >Email*</label
             >
@@ -53,9 +71,7 @@
             <p class="text-sm leading-relaxed text-grey-900">
               Allready have an account?
               <NuxtLink to="/login" class="justify-self-end"
-                ><a class="font-bold text-grey-700"
-                  >Login</a
-                ></NuxtLink
+                ><a class="font-bold text-grey-700">Login</a></NuxtLink
               >
             </p>
           </form>

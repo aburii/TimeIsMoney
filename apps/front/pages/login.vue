@@ -6,6 +6,7 @@
       <div class="flex items-center justify-center w-full lg:p-12">
         <div class="flex items-center xl:p-10">
           <form
+            @submit.prevent="login"
             class="flex flex-col w-full h-full pb-6 bg-base-200 p-10 text-center rounded-3xl"
           >
             <h3 class="mb-3 text-4xl font-extrabold text-dark-grey-900">
@@ -32,6 +33,7 @@
             >
             <input
               id="email"
+              v-model="email"
               type="email"
               placeholder="name@email.com"
               class="flex items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
@@ -41,6 +43,7 @@
             >
             <input
               id="password"
+              v-model="password"
               type="password"
               placeholder="Enter a password"
               class="flex items-center w-full px-5 py-4 mb-5 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
@@ -64,3 +67,31 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref } from "vue";
+import { useSessionStore } from "~/stores/session";
+
+definePageMeta({
+  middleware: ["guest"],
+});
+
+// Reactive variables for form inputs
+const email = ref("");
+const password = ref("");
+
+const sessionStore = useSessionStore();
+
+const login = async () => {
+  const response = await sessionStore.login({
+    email: email.value,
+    password: password.value,
+    app: "FRONT" as any,
+  });
+
+  if (response) {
+    return navigateTo("/cryptocurrencies");
+  } else {
+  }
+};
+</script>

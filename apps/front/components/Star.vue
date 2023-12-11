@@ -1,5 +1,5 @@
 <template>
-  <div @click="isToggled = !isToggled">
+  <div v-if="session.isLoggedIn" @click="isToggled = !isToggled">
     <svg
       v-if="!isToggled"
       xmlns="http://www.w3.org/2000/svg"
@@ -32,7 +32,10 @@
 </template>
 
 <script setup>
+import { useSessionStore } from "~/stores/session";
 import { ref } from "vue";
 
 const isToggled = ref(false);
+
+const session = useSessionStore();
 </script>
