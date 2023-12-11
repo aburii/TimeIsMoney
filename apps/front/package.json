@@ -1,5 +1,5 @@
 {
-  "name": "@timeismoney/front",
+  "name": "front",
   "private": true,
   "type": "module",
   "scripts": {
