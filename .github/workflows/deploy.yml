@@ -1,8 +1,8 @@
-name: Deploy to Railway
+name: Deploy
 
 on:
   push:
-    branches: [main, feature/ci]
+    branches: [main]
 
 jobs:
   deploy:
