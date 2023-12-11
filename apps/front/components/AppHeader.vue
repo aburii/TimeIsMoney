@@ -27,15 +27,12 @@
           <li><NuxtLink to="/news">News</NuxtLink></li>
         </ul>
       </div>
-      <NuxtLink to="/" class="btn btn-ghost text-xl">
-        <img src="@/assets/img/logo.png" class="max-w-[40px]" />
-      </NuxtLink>
       <NuxtLink to="/" class="btn btn-ghost text-xl hidden lg:flex">
         <img src="@/assets/img/logo.png" class="max-w-[40px]" />
         <p>The Count Of Money</p>
       </NuxtLink>
     </div>
-    <NuxtLink to="/" class="btn btn-ghost text-xl lg:hidden">
+    <NuxtLink to="/" class="btn btn-ghost text-xl flex lg:hidden">
       <img src="@/assets/img/logo.png" class="max-w-[40px]" />
     </NuxtLink>
     <div class="navbar-end">
@@ -86,6 +83,11 @@
       <NuxtLink to="/login" class="btn btn-primary">Login</NuxtLink>
     </div>
   </header>
+
+  <currencySelector
+    v-if="isCurrencySelectorVisible"
+    @close="toggleCurrencySelector"
+  />
 </template>
 
 <script>
