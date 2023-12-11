@@ -3,7 +3,12 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
 
-  modules: ["@timeismoney/ui-components/nuxt", "@vueuse/nuxt", "@pinia/nuxt"],
+  modules: [
+    "@timeismoney/ui-components/nuxt",
+    "@vueuse/nuxt",
+    "@pinia/nuxt",
+    "@nuxt/ui",
+  ],
 
   css: ["@/assets/scss/main.scss"],
 
@@ -11,6 +16,11 @@ export default defineNuxtConfig({
     plugins: {
       tailwindcss: {},
       autoprefixer: {},
+    },
+  },
+  runtimeConfig: {
+    public: {
+      BACK_URL: "http://localhost:8080/api",
     },
   },
 });
