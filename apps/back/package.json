@@ -30,6 +30,7 @@
     "@timeismoney/dto": "*",
     "@timeismoney/models": "*",
     "@timeismoney/security": "*",
+    "@timeismoney/cryptocompare": "*",
     "cookie-parser": "^1.4.6",
     "nestjs-prisma-crud": "^1.0.0-beta.18",
     "passport": "^0.6.0",
