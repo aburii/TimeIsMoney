@@ -17,7 +17,8 @@
     "@vueuse/nuxt": "^10.6.1",
     "apexcharts": "^3.44.0",
     "pinia": "^2.1.7",
-    "vue3-apexcharts": "^1.4.4"
+    "vue3-apexcharts": "^1.4.4",
+    "nuxt-vue3-google-signin": "^0.0.10"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
