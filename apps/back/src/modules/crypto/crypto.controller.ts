@@ -66,6 +66,18 @@ export class CryptoController {
     );
   }
 
+  @Get(':symbol/prices')
+  async coinSymbolsPrices(
+    @Param('symbol') symbol: string,
+    @Query(
+      'symbols',
+      new ParseArrayPipe({ items: String, separator: ',', optional: true }),
+    )
+    symbols: string[],
+  ) {
+    return this.cryptoService.coinSymbolsPrices(symbol, symbols);
+  }
+
   @Get(':symbol/history/:period')
   async history(
     @Param('symbol') symbol: string,
