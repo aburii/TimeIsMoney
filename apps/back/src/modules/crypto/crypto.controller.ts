@@ -11,15 +11,33 @@ import {
   ParseIntPipe,
   ParseEnumPipe,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { CryptoService } from './crypto.service';
 import { HistoryPeriod } from '@timeismoney/coinapi';
 import { CreateCurrencyDto, UpdateCurrencyDto } from '@timeismoney/dto';
 import { PaginationInterceptor } from '../../interceptors/pagination.interceptor';
+import { AccessGuard } from '../../guards/passport/jwt-at.guard';
+import { IRequestUser } from '../../types/passport/request-user';
+import { RequestUser } from '../../decorators/request-user.decorator';
+import { Currency } from '@prisma/client';
+import { UserService } from '../user/user.service';
+import { BoGuard } from '../../guards/bo.guard';
 
 @Controller('cryptos')
 export class CryptoController {
-  constructor(private readonly cryptoService: CryptoService) {}
+  constructor(
+    private readonly cryptoService: CryptoService,
+    private readonly userService: UserService,
+  ) {}
+
+  private async userCurrency(user?: IRequestUser): Promise<Currency> {
+    if (!user) return this.cryptoService.defaultConversionCurrency();
+    else
+      return this.cryptoService.findOne(
+        (await this.userService.findOne(user.userId)).currencyId,
+      );
+  }
 
   @UseInterceptors(PaginationInterceptor)
   @Get('api-fiat-currencies')
@@ -33,6 +51,7 @@ export class CryptoController {
     return this.cryptoService.listApiCurrencies();
   }
 
+  @UseGuards(AccessGuard, BoGuard)
   @Post('register/:symbol')
   async registerCryptoCurrency(@Param('symbol') symbol: string) {
     return this.cryptoService.registerCurrency(symbol);
@@ -48,8 +67,10 @@ export class CryptoController {
     return this.cryptoService.coinDetails(symbol);
   }
 
+  @UseGuards(new AccessGuard(true))
   @Get('prices')
   async prices(
+    @RequestUser() user: IRequestUser,
     @Query(
       'symbols',
       new ParseArrayPipe({ items: String, separator: ',', optional: true }),
@@ -57,17 +78,18 @@ export class CryptoController {
     symbols: string[],
   ) {
     return this.cryptoService.coinsPrices(
-      await this.cryptoService.defaultConversionCurrency(),
+      await this.userCurrency(user),
       symbols,
     );
   }
 
+  @UseGuards(new AccessGuard(true))
   @Get(':symbol/price')
-  async coinPrices(@Param('symbol') symbol: string) {
-    return this.cryptoService.coinPrices(
-      symbol,
-      await this.cryptoService.defaultConversionCurrency(),
-    );
+  async coinPrices(
+    @RequestUser() user: IRequestUser,
+    @Param('symbol') symbol: string,
+  ) {
+    return this.cryptoService.coinPrices(symbol, await this.userCurrency(user));
   }
 
   @Get(':symbol/prices')
@@ -82,8 +104,10 @@ export class CryptoController {
     return this.cryptoService.coinSymbolsPrices(symbol, symbols);
   }
 
+  @UseGuards(new AccessGuard(true))
   @Get(':symbol/history/:period')
   async history(
+    @RequestUser() user: IRequestUser,
     @Param('symbol') symbol: string,
     @Param('period', new ParseEnumPipe(HistoryPeriod)) period: HistoryPeriod,
     @Query('limit', ParseIntPipe) limit?: number,
@@ -91,7 +115,7 @@ export class CryptoController {
   ) {
     return this.cryptoService.coinHistory(
       symbol,
-      await this.cryptoService.defaultConversionCurrency(),
+      await this.userCurrency(user),
       period,
       limit,
       aggregate,
@@ -109,6 +133,7 @@ export class CryptoController {
     return this.cryptoService.coinSocialStats(symbol);
   }
 
+  @UseGuards(AccessGuard, BoGuard)
   @Post()
   async create(
     @Body() createCurrencyDto: CreateCurrencyDto,
@@ -129,6 +154,7 @@ export class CryptoController {
     return await this.cryptoService.findOne(id);
   }
 
+  @UseGuards(AccessGuard, BoGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -140,6 +166,7 @@ export class CryptoController {
     });
   }
 
+  @UseGuards(AccessGuard, BoGuard)
   @Delete(':id')
   async remove(@Param('id') id: string, @Query('crudQuery') crudQuery: string) {
     return this.cryptoService.remove(id, { crudQuery });
