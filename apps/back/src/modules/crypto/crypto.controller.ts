@@ -10,20 +10,24 @@ import {
   ParseArrayPipe,
   ParseIntPipe,
   ParseEnumPipe,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CryptoService } from './crypto.service';
 import { HistoryPeriod } from '@timeismoney/coinapi';
 import { CreateCurrencyDto, UpdateCurrencyDto } from '@timeismoney/dto';
+import { PaginationInterceptor } from '../../interceptors/pagination.interceptor';
 
 @Controller('cryptos')
 export class CryptoController {
   constructor(private readonly cryptoService: CryptoService) {}
 
+  @UseInterceptors(PaginationInterceptor)
   @Get('api-fiat-currencies')
   async listApiFiatCurrencies() {
     return this.cryptoService.listApiFiatCurrencies();
   }
 
+  @UseInterceptors(PaginationInterceptor)
   @Get('api-currencies')
   async listApiCurrencies() {
     return this.cryptoService.listApiCurrencies();
@@ -94,6 +98,7 @@ export class CryptoController {
     );
   }
 
+  @UseInterceptors(PaginationInterceptor)
   @Get(':symbol/articles')
   async articles(@Param('symbol') symbol: string, @Query('lang') lang: string) {
     return this.cryptoService.coinArticles(symbol, lang);
