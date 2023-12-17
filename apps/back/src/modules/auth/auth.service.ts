@@ -9,8 +9,10 @@ import { User } from '@prisma/client';
 import { compareHash, hash } from '@timeismoney/security';
 import { ITokens } from '../../types/jwt';
 import { ConfigService } from '@nestjs/config';
-import { App } from '@timeismoney/models';
+import { App, Provider } from '@timeismoney/models';
 import { signUpDto } from '@timeismoney/dto';
+import { OAuth2Client, TokenPayload } from 'google-auth-library';
+import { GoogleLoginDto } from '@timeismoney/dto/dist/auth/googleLogin.dto';
 
 @Injectable()
 export class AuthService {
@@ -33,7 +35,11 @@ export class AuthService {
   async registerUser(newUser: signUpDto) {
     const hashPw = await hash(newUser.password);
 
-    return this.userService.insertOne({ ...newUser, password: hashPw });
+    return this.userService.insertOne({
+      ...newUser,
+      password: hashPw,
+      refresh: '',
+    });
   }
 
   async login(userId: number, app: App): Promise<ITokens> {
@@ -109,5 +115,34 @@ export class AuthService {
     if (app === App.BO && role !== 'ADMIN') {
       throw new ForbiddenException();
     }
+  }
+
+  async verifyGoggleSession(body: GoogleLoginDto) {
+    const client = new OAuth2Client();
+    const ticket = await client.verifyIdToken({
+      idToken: body.token,
+      audience: this.configService.get<string>('GOOGLE_CLIENT_ID'),
+    });
+    return ticket.getPayload();
+  }
+
+  async loginOrCreateGoogleUser(payload: TokenPayload) {
+    let user = await this.userService.findOneByEmail(payload.email);
+
+    if (!user) {
+      user = await this.userService.insertOne({
+        nickname: payload.name,
+        firstname: payload.given_name,
+        lastname: payload.family_name,
+        email: payload.email,
+        password: '',
+        provider: Provider.GOOGLE,
+        refresh: '',
+      });
+    }
+
+    const tokens = await this.generateTokens(user.id, App.FRONT);
+    await this.updateUserRefresh(user.id, tokens.refreshToken);
+    return tokens;
   }
 }

@@ -28,7 +28,8 @@ model User {
   currencyId               Int?
   followedCryptoCurrencies UserFollowedCurrencies[]
 
-  role Role @default(CLIENT)
+  role     Role     @default(CLIENT)
+  provider Provider @default(LOCAL)
 }
 
 model Currency {
@@ -65,4 +66,9 @@ enum App {
 enum Role {
   ADMIN
   CLIENT
+}
+
+enum Provider {
+  LOCAL
+  GOOGLE
 }

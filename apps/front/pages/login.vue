@@ -61,7 +61,6 @@
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref } from "vue";
 import { useSessionStore } from "~/stores/session";
@@ -93,17 +92,15 @@ const login = async () => {
   return navigateTo("/cryptocurrencies");
 };
 
-useOneTap({
-  onSuccess: (response: CredentialResponse) => {
-    console.log("Success:", response);
-  },
-  onError: () => console.error("Error with One Tap Login"),
-  // options
-});
-
-const handleLoginSuccess = (response: CredentialResponse) => {
+const googleLogin = useGoogleLogin();
+const handleLoginSuccess = async (response: CredentialResponse) => {
   const { credential } = response;
-  console.log("Access Token", credential);
+
+  const res = await googleLogin({ token: credential });
+
+  if (!res.ok) {
+    return;
+  }
 };
 
 // handle an error event

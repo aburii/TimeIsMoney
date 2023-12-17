@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaCrudService } from 'nestjs-prisma-crud';
-import { User } from '@prisma/client';
-import { signUpDto } from '@timeismoney/dto';
+import { Prisma, User } from '@prisma/client';
 
 @Injectable()
 export class UserService extends PrismaCrudService {
@@ -33,7 +32,7 @@ export class UserService extends PrismaCrudService {
     });
   }
 
-  async insertOne(data: signUpDto): Promise<User | null> {
+  async insertOne(data: Prisma.UserCreateInput): Promise<User | null> {
     return this.prisma.user.create({
       data: {
         ...data,
