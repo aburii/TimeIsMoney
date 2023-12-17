@@ -1,5 +1,8 @@
 <template>
-  <btn v-if="sessionStore.isLoggedIn" @click="logout" class="btn btn-sm btn-primary"
+  <btn
+    v-if="sessionStore.isLoggedIn"
+    @click="logout"
+    class="btn btn-sm btn-primary"
     >Logout</btn
   >
 </template>
@@ -12,6 +15,6 @@ const sessionStore = useSessionStore();
 
 const logout = async () => {
   const response = await sessionStore.logout();
-  navigateTo("/login");
+  return navigateTo("/login");
 };
 </script>

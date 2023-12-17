@@ -13,10 +13,12 @@
               Login
             </h3>
             <p class="mb-4 text-grey-700">Enter your email and password</p>
-            <GoogleSignInButton
-              @success="handleLoginSuccess"
-              @error="handleLoginError"
-            ></GoogleSignInButton>
+            <div class="w-full mx-auto">
+              <GoogleSignInButton
+                @success="handleLoginSuccess"
+                @error="handleLoginError"
+              />
+            </div>
             <div class="flex items-center mb-3">
               <hr class="h-0 border-b border-solid border-grey-500 grow" />
               <p class="mx-4 text-grey-600">or</p>
@@ -86,21 +88,22 @@ const login = async () => {
   });
 
   if (!response) {
-    return toast.add({ title: "Authentification went wrong!" });
+    return toast.add({ title: "Authentification went wrong!", color: "red" });
   }
   toast.add({ title: "Sucessfully Authenticated" });
   return navigateTo("/cryptocurrencies");
 };
 
-const googleLogin = useGoogleLogin();
 const handleLoginSuccess = async (response: CredentialResponse) => {
   const { credential } = response;
 
-  const res = await googleLogin({ token: credential });
+  const res = await sessionStore.loginWithGoogle(credential);
 
-  if (!res.ok) {
-    return;
+  if (!res) {
+    return toast.add({ title: "Authentification went wrong!", color: "red" });
   }
+  toast.add({ title: "Sucessfully Authenticated" });
+  return navigateTo("/cryptocurrencies");
 };
 
 // handle an error event
