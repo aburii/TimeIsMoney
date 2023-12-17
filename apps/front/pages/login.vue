@@ -76,12 +76,11 @@ definePageMeta({
   middleware: ["guest"],
 });
 
-// Reactive variables for form inputs
 const email = ref("");
 const password = ref("");
 
 const sessionStore = useSessionStore();
-
+const toast = useToast();
 const login = async () => {
   const response = await sessionStore.login({
     email: email.value,
@@ -89,9 +88,10 @@ const login = async () => {
     app: "FRONT" as any,
   });
 
-  if (response) {
-    return navigateTo("/cryptocurrencies");
-  } else {
+  if (!response) {
+    return toast.add({ title: "Authentification went wrong!" });
   }
+  toast.add({ title: "Sucessfully Authenticated" });
+  return navigateTo("/cryptocurrencies");
 };
 </script>

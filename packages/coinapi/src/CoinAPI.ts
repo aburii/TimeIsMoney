@@ -1,4 +1,5 @@
 import { CryptoCompareClient } from "@timeismoney/cryptocompare";
+import { Cache } from "cache-manager";
 import * as cc from "@timeismoney/cryptocompare";
 import * as types from "./types";
 
@@ -8,11 +9,21 @@ function convertTimestampToISODate(timestamp: number): string {
   return isoDate;
 }
 
+const TTL_SECOND = 1000;
+const TTL_MINUTE = TTL_SECOND * 60;
+const TTL_HOUR = TTL_MINUTE * 60;
+const TTL_DAY = TTL_HOUR * 24;
+const TTL_WEEK = TTL_DAY * 7;
+
 export class CoinAPI {
   client: CryptoCompareClient;
+  cacheManager?: Cache;
+  private onlyCache?: boolean;
 
-  constructor(apiKey: string) {
+  constructor(apiKey: string, cacheManager?: Cache) {
     this.client = new CryptoCompareClient(apiKey);
+    this.cacheManager = cacheManager;
+    this.onlyCache = false;
   }
 
   private convertCCCoinInformationShort(
@@ -236,12 +247,61 @@ export class CoinAPI {
     };
   }
 
+  private cacheKey(fctName: string, ...args: any[]): string {
+    return `CoinAPI-${fctName}${args.length > 0 ? `-${args.join("-")}` : ""}`;
+  }
+
+  private cacheValue<DataType>(key: string, value: DataType, ttl?: number) {
+    if (this.cacheManager) this.cacheManager.set(key, value, ttl);
+  }
+
+  private async cachedValue<DataType>(
+    key: string,
+    callback: () => Promise<DataType>,
+    ttl?: number
+  ): Promise<DataType | undefined> {
+    if (!this.cacheManager) return callback();
+    const cached = await this.cacheManager.get<DataType>(key);
+    if (cached) return cached;
+    else {
+      if (this.onlyCache) return undefined;
+      const value = await callback();
+      this.cacheValue(key, value, ttl);
+      return value;
+    }
+  }
+
+  private static cached(cacheDuration: number) {
+    return function (
+      target: any,
+      propertyKey: string,
+      descriptor: PropertyDescriptor
+    ) {
+      const originalMethod = descriptor.value;
+
+      descriptor.value = async function (...args: any[]) {
+        const coinApi = this as CoinAPI;
+
+        return coinApi.cachedValue(
+          coinApi.cacheKey(propertyKey, args),
+          async () => {
+            return originalMethod.apply(coinApi, args);
+          },
+          cacheDuration
+        );
+      };
+      return descriptor;
+    };
+  }
+
+  @CoinAPI.cached(TTL_WEEK)
   async listFiats(): Promise<types.CoinInformationsShort[]> {
     const fiats = await this.client.fiatList();
 
     return fiats.map(this.convertCCAssetSummaryToCoinShort);
   }
 
+  @CoinAPI.cached(TTL_WEEK)
   async coinInformationsShort(
     symbol: string
   ): Promise<types.CoinInformationsShort> {
@@ -250,6 +310,7 @@ export class CoinAPI {
     );
   }
 
+  @CoinAPI.cached(TTL_WEEK)
   async listCoins(): Promise<types.CoinInformationsShort[]> {
     const coins: cc.CoinsInformationsShort = await this.client.coinList({
       summary: true,
@@ -263,6 +324,7 @@ export class CoinAPI {
     return informations;
   }
 
+  @CoinAPI.cached(TTL_WEEK)
   async coinInformations(
     coinSymbol: string
   ): Promise<types.CoinInformations | undefined> {
@@ -278,27 +340,55 @@ export class CoinAPI {
     return undefined;
   }
 
+  // Custom cache
   async coinsPrices(
     coinSymbols: string[],
     destSymbols: string[] = ["EUR"]
   ): Promise<types.MultiCoinsPrices> {
-    const data = await this.client.coinFullData({
-      fsyms: coinSymbols,
-      tsyms: destSymbols,
-    });
+    const result: types.MultiCoinsPrices = {};
+    const notCachedCoins: Set<string> = new Set();
+    const notCachedDests: Set<string> = new Set();
 
-    const prices: types.MultiCoinsPrices = {};
-    for (const coinSymbol in data.RAW) {
-      prices[coinSymbol] = {};
-      for (const destSymbol in data.RAW[coinSymbol]) {
-        prices[coinSymbol][destSymbol] = this.convertCCCoinPriceFullRaw(
-          data.RAW[coinSymbol][destSymbol]
-        );
+    for (const coinSym of coinSymbols) {
+      for (const destSym of destSymbols) {
+        this.onlyCache = true;
+        const coinSymPrices = await this.coinSymbolPrices(coinSym, destSym);
+        this.onlyCache = false;
+        if (coinSymPrices === undefined) {
+          notCachedCoins.add(coinSym);
+          notCachedDests.add(destSym);
+        } else {
+          if (!(coinSym in result)) result[coinSym] = {};
+          result[coinSym][destSym] = coinSymPrices;
+        }
       }
     }
-    return prices;
+
+    if (notCachedCoins.size > 0) {
+      const data = await this.client.coinFullData({
+        fsyms: Array.from(notCachedCoins),
+        tsyms: Array.from(notCachedDests),
+      });
+
+      for (const coinSymbol in data.RAW) {
+        if (!(coinSymbol in result)) result[coinSymbol] = {};
+        for (const destSymbol in data.RAW[coinSymbol]) {
+          const coinSymPrices = this.convertCCCoinPriceFullRaw(
+            data.RAW[coinSymbol][destSymbol]
+          );
+          this.cacheValue(
+            this.cacheKey("coinSymbolPrices", coinSymbol, destSymbol),
+            coinSymPrices,
+            TTL_MINUTE
+          );
+          result[coinSymbol][destSymbol] = coinSymPrices;
+        }
+      }
+    }
+    return result;
   }
 
+  // Cached in coinsPrices
   async coinSymbolsPrices(
     coinSymbol: string,
     destSymbols: string[] = ["EUR"]
@@ -306,6 +396,8 @@ export class CoinAPI {
     return (await this.coinsPrices([coinSymbol], destSymbols))[coinSymbol];
   }
 
+  // Cached in coinsPrices
+  @CoinAPI.cached(TTL_MINUTE)
   async coinSymbolPrices(
     coinSymbol: string,
     destSymbols: string = "EUR"
@@ -322,13 +414,43 @@ export class CoinAPI {
     limit: number = 30,
     aggregate: number = 1
   ): Promise<types.CoinHistory> {
+    // Define cache key
+    const cacheKey = this.cacheKey(
+      "coinHistory",
+      coinSymbol,
+      destSymbol,
+      period
+    );
+
+    // If we have a cache Manager we try to avoid an api call
+    if (this.cacheManager) {
+      const cached = await this.cacheManager.get<types.CoinHistory>(cacheKey);
+      if (cached) {
+        console.log(cached.history.length);
+        if (cached.history.length >= limit) {
+          return cached;
+        }
+      }
+    }
+
+    // If we are here, we don't have the value cached so we fetch it
     const history = await this.client.history(period, {
       fsym: coinSymbol,
       tsym: destSymbol,
       aggregate: aggregate,
       limit: limit,
     });
-    return this.convertCCHistory(period, history);
+    const convertedHistory = this.convertCCHistory(period, history);
+
+    // Cache the new value
+    if (this.cacheManager) {
+      const deltaTime =
+        convertedHistory.history[1].time - convertedHistory.history[0].time;
+      const ttl =
+        deltaTime - (new Date().getTime() / 1000 - convertedHistory.timeTo);
+      this.cacheValue(cacheKey, convertedHistory, ttl * 1000);
+    }
+    return convertedHistory;
   }
 
   async newsArticles(params?: {
@@ -360,18 +482,22 @@ export class CoinAPI {
     });
   }
 
+  @CoinAPI.cached(TTL_WEEK)
   async newsFeeds(): Promise<types.Feed[]> {
     return this.client.newsFeeds();
   }
 
+  @CoinAPI.cached(TTL_WEEK)
   async newsCategories(): Promise<types.Category[]> {
     return this.client.newsCategories();
   }
 
+  @CoinAPI.cached(TTL_WEEK)
   async newsFeedsAndCategories(): Promise<types.FeedsAndCategories> {
     return this.client.newsFeedsAndCategories();
   }
 
+  @CoinAPI.cached(TTL_HOUR)
   async coinArticles(
     coinSymbol: string,
     lang: string = "EN"
@@ -379,6 +505,7 @@ export class CoinAPI {
     return this.latestArticles([coinSymbol], lang);
   }
 
+  @CoinAPI.cached(TTL_HOUR)
   async coinSocialStats(coinId?: number): Promise<types.SocialStats> {
     const socialStats = await this.client.coinSocialStats({ coinId: coinId });
     return this.convertCCSocialStats(socialStats);

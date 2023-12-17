@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { CacheModule } from '@nestjs/cache-manager';
 import { PrismaCrudModule } from 'nestjs-prisma-crud';
 import { PrismaService } from '@timeismoney/models';
 import { UserModule } from './modules/user/user.module';
@@ -15,6 +16,7 @@ import { ConfigModule } from '@nestjs/config';
     PrismaCrudModule.register({
       prismaService: PrismaService,
     }),
+    CacheModule.register({ isGlobal: true }),
     UserModule,
     CryptoModule,
     AuthModule,

@@ -4,7 +4,6 @@ import {
   Feed,
   Category,
   FeedsAndCategories,
-  CoinAPI,
 } from '@timeismoney/coinapi';
 import { CoinApiService } from '../coinapi/coinapi.service';
 

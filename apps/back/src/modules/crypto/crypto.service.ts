@@ -6,6 +6,7 @@ import {
   CoinInformations,
   CoinInformationsShort,
   CoinSymbolPrices,
+  CoinSymbolsPrices,
   HistoryPeriod,
   MultiCoinsPrices,
   SocialStats,
@@ -108,6 +109,13 @@ export class CryptoService extends PrismaCrudService {
     destSymbol: Currency,
   ): Promise<CoinSymbolPrices> {
     return this.coinAPI.client.coinSymbolPrices(symbol, destSymbol.symbol);
+  }
+
+  async coinSymbolsPrices(
+    symbol: string,
+    destSymbols: string[],
+  ): Promise<CoinSymbolsPrices> {
+    return this.coinAPI.client.coinSymbolsPrices(symbol, destSymbols);
   }
 
   async coinsPrices(

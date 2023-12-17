@@ -1,5 +1,5 @@
 {
-  "name": "@timeismoney/front",
+  "name": "front",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,13 +10,14 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@timeismoney/ui-components": "*",
-    "apexcharts": "^3.44.0",
-    "vue3-apexcharts": "^1.4.4",
+    "@nuxt/ui": "^2.11.0",
     "@pinia/nuxt": "^0.5.1",
+    "@timeismoney/ui-components": "*",
     "@vueuse/core": "^10.6.1",
     "@vueuse/nuxt": "^10.6.1",
-    "pinia": "^2.1.7"
+    "apexcharts": "^3.44.0",
+    "pinia": "^2.1.7",
+    "vue3-apexcharts": "^1.4.4"
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",

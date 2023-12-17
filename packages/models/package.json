@@ -8,6 +8,7 @@
   "license": "ISC",
   "scripts": {
     "build": "tsc",
+    "generate": "npx prisma generate",
     "reset": "npx prisma db push --force-reset && npm run seed",
     "migrate": "npx prisma migrate dev --name init",
     "seed": "ts-node src/seed.ts"

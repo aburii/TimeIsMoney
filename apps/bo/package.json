@@ -1,5 +1,5 @@
 {
-  "name": "@timeismoney/bo",
+  "name": "bo",
   "private": true,
   "type": "module",
   "scripts": {

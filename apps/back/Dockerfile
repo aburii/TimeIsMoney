@@ -1,48 +1,41 @@
-###################
-# BUILD FOR LOCAL DEVELOPMENT
-###################
+FROM node:18-alpine AS base
 
-FROM node:18-alpine As development
+FROM base AS builder
+RUN apk add --no-cache libc6-compat
+RUN apk update
+# Set working directory
+WORKDIR /app
+RUN npm install --global turbo
+COPY . .
+RUN turbo prune back  --docker
 
+# Add lockfile and package.json's of isolated subworkspace
+FROM base AS installer
+RUN apk add --no-cache libc6-compat
+RUN apk update
 WORKDIR /app
 
-COPY --chown=node:node package*.json ./
-
+# First install the dependencies (as they change less often)
+COPY .gitignore .gitignore
+COPY --from=builder /app/out/json/ .
+COPY --from=builder /app/out/package-lock.json ./package-lock.json
 RUN npm install
 
-COPY --chown=node:node . .
+# Build the project
+COPY --from=builder /app/out/full/ .
+RUN  npx prisma generate
+COPY turbo.json turbo.json
+RUN  npx turbo run build --filter=back
 
-USER node
-
-###################
-# BUILD FOR PRODUCTION
-###################
-
-FROM node:18-alpine As build
-
+FROM base AS runner
 WORKDIR /app
 
-COPY --chown=node:node package*.json ./
-COPY --chown=node:node --from=development /app/node_modules ./node_modules
-COPY --chown=node:node . .
+# Don't run production as root
+RUN addgroup --system --gid 1001 nodejs
 
-RUN npm run build
+COPY --from=installer ./app .
+WORKDIR /app/apps/back
 
-ENV NODE_ENV production
+RUN  npx prisma generate
 
-RUN npm install --only=production && npm cache clean --force
-
-USER node
-
-###################
-# PRODUCTION
-###################
-
-FROM node:18-alpine As production
-
-# Copy the bundled code from the build stage to the production image
-COPY --chown=node:node --from=build /app/node_modules ./node_modules
-COPY --chown=node:node --from=build /app/dist ./dist
-
-# Start the server using the production build
-CMD [ "node", "dist/main.js" ]
+CMD [ "node", "./dist/main.js" ]
