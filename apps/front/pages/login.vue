@@ -13,16 +13,10 @@
               Login
             </h3>
             <p class="mb-4 text-grey-700">Enter your email and password</p>
-            <a
-              class="btn flex items-center justify-center w-full py-4 mb-6 text-sm font-medium transition duration-300 rounded-2xl text-grey-900 bg-grey-300 hover:bg-grey-400 focus:ring-4 focus:ring-grey-300"
-            >
-              <img
-                class="h-5 mr-2"
-                src="https://raw.githubusercontent.com/Loopple/loopple-public-assets/main/motion-tailwind/img/logos/logo-google.png"
-                alt=""
-              />
-              Login with Google
-            </a>
+            <GoogleSignInButton
+              @success="handleLoginSuccess"
+              @error="handleLoginError"
+            ></GoogleSignInButton>
             <div class="flex items-center mb-3">
               <hr class="h-0 border-b border-solid border-grey-500 grow" />
               <p class="mx-4 text-grey-600">or</p>
@@ -71,6 +65,10 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useSessionStore } from "~/stores/session";
+import {
+  GoogleSignInButton,
+  type CredentialResponse,
+} from "vue3-google-signin";
 
 definePageMeta({
   middleware: ["guest"],
@@ -93,5 +91,23 @@ const login = async () => {
   }
   toast.add({ title: "Sucessfully Authenticated" });
   return navigateTo("/cryptocurrencies");
+};
+
+useOneTap({
+  onSuccess: (response: CredentialResponse) => {
+    console.log("Success:", response);
+  },
+  onError: () => console.error("Error with One Tap Login"),
+  // options
+});
+
+const handleLoginSuccess = (response: CredentialResponse) => {
+  const { credential } = response;
+  console.log("Access Token", credential);
+};
+
+// handle an error event
+const handleLoginError = () => {
+  console.error("Login failed");
 };
 </script>
