@@ -10,6 +10,8 @@ import {
   Query,
   UseInterceptors,
   UseGuards,
+  ForbiddenException,
+  ParseArrayPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from '@timeismoney/dto';
@@ -18,6 +20,7 @@ import {
   UsersListInterceptor,
 } from '../../interceptors/user.interceptor';
 import { AccessGuard } from '../../guards/passport/jwt-at.guard';
+import { BoGuard } from '../../guards/bo.guard';
 import { RequestUser } from '../../decorators/request-user.decorator';
 import { IRequestUser } from '../../types/passport/request-user';
 
@@ -26,6 +29,19 @@ import { IRequestUser } from '../../types/passport/request-user';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  private async canEditUser(
+    currentUser: IRequestUser,
+    userId: number,
+  ): Promise<Boolean> {
+    const dbUser = await this.userService.findOne(currentUser.userId);
+
+    return (
+      (dbUser.role === 'ADMIN' && currentUser.app === 'BO') ||
+      currentUser.userId == userId
+    );
+  }
+
+  @UseGuards(BoGuard)
   @Post()
   async create(
     @Body() createUserDto: CreateUserDto,
@@ -52,20 +68,78 @@ export class UserController {
     return await this.userService.findOne(id);
   }
 
+  @Get(':id/followed')
+  async followedCryptos(
+    @RequestUser() user: IRequestUser,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return await this.userService.followedCryptos(user.userId);
+  }
+
   @UseInterceptors(UserInterceptor)
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @RequestUser() user: IRequestUser,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
     @Query('crudQuery') crudQuery: string,
   ) {
+    if (!this.canEditUser(user, id)) {
+      throw new ForbiddenException(
+        'You do not have permission to edit this user.',
+      );
+    }
+
     return await this.userService.update(id, updateUserDto, {
       crudQuery,
     });
   }
 
+  @UseInterceptors(UserInterceptor)
+  @Post(':id/follow')
+  async followCryptos(
+    @RequestUser() user: IRequestUser,
+    @Param('id', ParseIntPipe) id: number,
+    @Query('cryptos', new ParseArrayPipe({ items: Number, separator: ',' }))
+    cryptos: number[],
+  ) {
+    if (!this.canEditUser(user, id)) {
+      throw new ForbiddenException(
+        'You do not have permission to edit this user.',
+      );
+    }
+
+    return await this.userService.followNewCryptos(user.userId, cryptos);
+  }
+
+  @UseInterceptors(UserInterceptor)
+  @Post(':id/unfollow')
+  async unfollowCryptos(
+    @RequestUser() user: IRequestUser,
+    @Param('id', ParseIntPipe) id: number,
+    @Query('cryptos', new ParseArrayPipe({ items: Number, separator: ',' }))
+    cryptos: number[],
+  ) {
+    if (!this.canEditUser(user, id)) {
+      throw new ForbiddenException(
+        'You do not have permission to edit this user.',
+      );
+    }
+
+    return await this.userService.unfollowCryptos(user.userId, cryptos);
+  }
+
   @Delete(':id')
-  async remove(@Param('id') id: string, @Query('crudQuery') crudQuery: string) {
+  async remove(
+    @RequestUser() user: IRequestUser,
+    @Param('id', ParseIntPipe) id: number,
+    @Query('crudQuery') crudQuery: string,
+  ) {
+    if (!this.canEditUser(user, id)) {
+      throw new ForbiddenException(
+        'You do not have permission to edit this user.',
+      );
+    }
     return this.userService.remove(id, { crudQuery });
   }
 }
