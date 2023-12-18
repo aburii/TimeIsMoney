@@ -23,9 +23,7 @@
           Commencer
         </button>
       </div>
-      <div
-        class="w-full sm:w-[500px] border-solid border-secondary-content border-[2px]"
-      >
+      <div class="w-full sm:w-[500px] border-solid border-black border-[4px]">
         <img
           src="@/assets/img/cryptocurrencies.png"
           alt="Cryptocurrencies"
@@ -53,9 +51,7 @@
           Explorer plus
         </button>
       </div>
-      <div
-        class="w-full sm:w-[500px] border-solid border-secondary-content border-[2px]"
-      >
+      <div class="w-full sm:w-[500px] border-solid border-black border-[4px]">
         <img
           src="@/assets/img/news.png"
           alt="News"

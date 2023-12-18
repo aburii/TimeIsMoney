@@ -14,13 +14,13 @@
     </div>
     <div class="flex flex-wrap items-center justify-center self-stretch gap-12">
       <HomeCustomChartBox>
-        <img class="h-full" src="@/assets/img/chart1.png" alt="graphique" />
-      </HomeCustomChartBox>
-      <HomeCustomChartBox>
         <img class="h-full" src="@/assets/img/chart2.png" alt="graphique" />
       </HomeCustomChartBox>
       <HomeCustomChartBox>
-        <img class="h-full" src="@/assets/img/chart3.png" alt="graphique" />
+        <img class="h-full" src="@/assets/img/chart1.png" alt="graphique" />
+      </HomeCustomChartBox>
+      <HomeCustomChartBox>
+        <img class="h-full" src="@/assets/img/charts.png" alt="graphique" />
       </HomeCustomChartBox>
     </div>
   </section>
