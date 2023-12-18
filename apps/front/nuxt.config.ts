@@ -12,7 +12,8 @@ export default defineNuxtConfig({
   ],
 
   googleSignIn: {
-    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientId:
+      "958608490777-5419bcsn8ap881oh5p50p1n9pf3v0ba1.apps.googleusercontent.com",
   },
 
   css: ["@/assets/scss/main.scss"],
