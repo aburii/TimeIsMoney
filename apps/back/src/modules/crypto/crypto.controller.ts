@@ -32,11 +32,14 @@ export class CryptoController {
   ) {}
 
   private async userCurrency(user?: IRequestUser): Promise<Currency> {
-    if (!user) return this.cryptoService.defaultConversionCurrency();
-    else
-      return this.cryptoService.findOne(
-        (await this.userService.findOne(user.userId)).currencyId,
-      );
+    if (user === null || user === undefined)
+      return this.cryptoService.defaultConversionCurrency();
+    else {
+      const userCurrency = (await this.userService.findOne(user.userId))
+        .currencyId;
+      if (userCurrency) return this.cryptoService.findOne(userCurrency);
+      else return this.cryptoService.defaultConversionCurrency();
+    }
   }
 
   @UseInterceptors(PaginationInterceptor)
