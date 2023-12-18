@@ -8,7 +8,12 @@ export default defineNuxtConfig({
     "@vueuse/nuxt",
     "@pinia/nuxt",
     "@nuxt/ui",
+    "nuxt-vue3-google-signin",
   ],
+
+  googleSignIn: {
+    clientId: process.env.GOOGLE_CLIENT_ID,
+  },
 
   css: ["@/assets/scss/main.scss"],
 
@@ -18,9 +23,10 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+
   runtimeConfig: {
     public: {
-      BACK_URL: "http://localhost:8080/api",
+      BACK_URL: "",
     },
   },
 });

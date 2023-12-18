@@ -20,6 +20,8 @@ import { Request, Response } from 'express';
 import { UserInterceptor } from '../../interceptors/user.interceptor';
 import { IRequestUser } from '../../types/passport/request-user';
 import { RefreshGuard } from '../../guards/passport/jwt-rt.guard';
+import { TokenPayload } from 'google-auth-library';
+import { GoogleLoginDto } from '@timeismoney/dto/dist/auth/googleLogin.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -94,6 +96,29 @@ export class AuthController {
 
     response.clearCookie('access_token');
     response.clearCookie('refresh_token');
+
+    return;
+  }
+
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Post('/google/verify')
+  async verifyGoogleToken(
+    @Body() body: GoogleLoginDto,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const payload: TokenPayload =
+      await this.authService.verifyGoggleSession(body);
+
+    const tokens = await this.authService.loginOrCreateGoogleUser(payload);
+
+    response.cookie('access_token', tokens.accessToken, {
+      sameSite: 'strict',
+      httpOnly: true,
+    });
+    response.cookie('refresh_token', tokens.refreshToken, {
+      sameSite: 'strict',
+      httpOnly: true,
+    });
 
     return;
   }

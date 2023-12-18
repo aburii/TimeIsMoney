@@ -77,9 +77,13 @@
         <div class="divider lg:divider-horizontal"></div>
       </div>
       <div class="mx-2">
-        <NuxtLink v-if:="!session.isLoggedIn" to="/login" class="btn btn-sm btn-primary"
+        <NuxtLink
+          v-if="!session.isLoggedIn"
+          to="/login"
+          class="btn btn-sm btn-primary"
           >Login</NuxtLink
         >
+        {{ session.user?.nickname }}
         <Logout />
       </div>
     </div>

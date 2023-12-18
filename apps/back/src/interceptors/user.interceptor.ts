@@ -22,7 +22,7 @@ export class UserInterceptor implements NestInterceptor {
           email: data.email,
           firstname: data.firstname,
           lastname: data.lastname,
-          nickname: data.lastname,
+          nickname: data.nickname,
           createdAt: data.createdAt,
           updatedAt: data.updatedAt,
           currency: data.currencyId,

@@ -30,6 +30,17 @@ export const useSessionStore = defineStore("session", () => {
     return true;
   }
 
+  async function loginWithGoogle(credential: string) {
+    const res = await useGoogleLogin()({ token: credential });
+
+    if (!res.ok) {
+      return false;
+    }
+
+    await reloadUser();
+    return true;
+  }
+
   async function refreshSession(): Promise<boolean> {
     if (!user.value) {
       return false;
@@ -72,6 +83,7 @@ export const useSessionStore = defineStore("session", () => {
     isRefreshing,
     login,
     refreshSession,
+    loginWithGoogle,
     logout,
     localLogout,
   };
