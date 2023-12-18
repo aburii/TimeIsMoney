@@ -6,7 +6,7 @@ type Err = { ok: false; status: number };
 export async function useFetchAPI<T>(
   method: "GET" | "POST" | "PUT" | "DELETE",
   url: string,
-  body?: any,
+  body?: any
 ): Promise<Ok<T> | Err> {
   const session = useSessionStore();
 

@@ -1,5 +1,12 @@
-import { Controller, Get, Query, ParseArrayPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Query,
+  ParseArrayPipe,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ArticleService } from './article.service';
+import { PaginationInterceptor } from '../../interceptors/pagination.interceptor';
 
 @Controller('articles')
 export class ArticleController {
@@ -34,16 +41,19 @@ export class ArticleController {
     );
   }
 
+  @UseInterceptors(PaginationInterceptor)
   @Get('feeds')
   async feeds() {
     return this.articleService.feeds();
   }
 
+  @UseInterceptors(PaginationInterceptor)
   @Get('categories')
   async categories() {
     return this.articleService.categories();
   }
 
+  @UseInterceptors(PaginationInterceptor)
   @Get('feedsAndCategories')
   async feedsAndCategories() {
     return this.articleService.feedsAndcategories();

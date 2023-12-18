@@ -28,6 +28,24 @@
               <hr class="h-0 border-b border-solid border-grey-500 grow" />
             </div>
             <label for="email" class="mb-2 text-sm text-start text-grey-900"
+              >First Name*</label
+            >
+            <input
+              id="first_name"
+              type="name"
+              placeholder="Firstname"
+              class="flex items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
+            />
+            <label for="email" class="mb-2 text-sm text-start text-grey-900"
+              >Last Name*</label
+            >
+            <input
+              id="last_name"
+              type="name"
+              placeholder="Lastname"
+              class="flex items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
+            />
+            <label for="email" class="mb-2 text-sm text-start text-grey-900"
               >Email*</label
             >
             <input

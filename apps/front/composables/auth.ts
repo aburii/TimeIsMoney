@@ -8,7 +8,7 @@ export function useLogin() {
     return await useFetchAPI<any>(
       "POST",
       `${AUTH_ENDPOINT}/login`,
-      credentials,
+      credentials
     );
   };
 }
