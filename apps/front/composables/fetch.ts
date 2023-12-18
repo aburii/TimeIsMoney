@@ -1,4 +1,6 @@
 import { useSessionStore } from "~/stores/session";
+const runtimeConfig = useRuntimeConfig();
+const ENDPOINT = `${runtimeConfig.public.BACK_URL}`;
 
 type Ok<T> = { ok: true; data: T };
 type Err = { ok: false; status: number };
@@ -9,8 +11,8 @@ export async function useFetchAPI<T>(
   body?: any
 ): Promise<Ok<T> | Err> {
   const session = useSessionStore();
-
-  const response = await fetch(url, {
+  const fullUrl = `${ENDPOINT}${url}`;
+  const response = await fetch(fullUrl, {
     credentials: "include",
     headers: {
       "Content-type": "application/json",
