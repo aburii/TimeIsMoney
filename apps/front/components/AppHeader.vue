@@ -23,8 +23,8 @@
           class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
         >
           <li><NuxtLink to="/">Home</NuxtLink></li>
-          <li><NuxtLink to="/">Crypto</NuxtLink></li>
-          <li><NuxtLink to="/">News</NuxtLink></li>
+          <li><NuxtLink to="/cryptocurrencies">Crypto</NuxtLink></li>
+          <li><NuxtLink to="/news">News</NuxtLink></li>
         </ul>
       </div>
       <NuxtLink to="/" class="btn btn-ghost text-xl hidden lg:flex">
