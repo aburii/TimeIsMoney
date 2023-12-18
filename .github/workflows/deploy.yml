@@ -3,6 +3,8 @@ name: Deploy
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   deploy:
@@ -56,5 +58,29 @@ jobs:
 
       - name: Apply all pending migrations to the database
         run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+  seed:
+    needs: migrate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Install TypeScript
+        run: npm install -g typescript
+
+      - name: Install ts-node
+        run: npm install -g ts-node
+
+      - name: Run seed
+        run: ts-node ./packages/models/src/seed.ts
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
