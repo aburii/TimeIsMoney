@@ -6,6 +6,7 @@ definePageMeta({
 });
 
 const sessionStore = useSessionStore();
+const toast = useToast();
 
 const login = async () => {
   const response = await sessionStore.login({
@@ -14,8 +15,10 @@ const login = async () => {
     app: "BO" as any,
   });
 
+  console.log(response);
+
   if (!response) {
-    /* todo: faire des toast */
+    toast.add({ title: "Une erreur est survenue lors de l'identification" });
     return;
   }
 
@@ -30,7 +33,9 @@ const login = async () => {
       <input type="text" />
       <label>Password</label>
       <input type="password" />
-      <button type="submit" @click.prevent="login">Login</button>
+      <button type="submit" class="btn btn-primary" @click.prevent="login">
+        Login
+      </button>
     </form>
   </section>
 </template>
