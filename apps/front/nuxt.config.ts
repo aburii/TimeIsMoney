@@ -1,5 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  app: {
+    head: {
+      title: "The Count of Money - PAR4",
+    },
+  },
+
   devtools: { enabled: true },
   ssr: false,
 
@@ -9,6 +15,7 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@nuxt/ui",
     "nuxt-vue3-google-signin",
+    "@nuxtjs/svg-sprite",
   ],
 
   googleSignIn: {
