@@ -34,8 +34,23 @@
 <script setup>
 import { useSessionStore } from "~/stores/session";
 import { ref } from "vue";
+import { defineProps } from "vue";
+const props = defineProps({
+  crypto: {
+    type: String,
+    required: true,
+  },
+});
 
 const isToggled = ref(false);
-
 const session = useSessionStore();
+const toast = useToast();
+
+watch(isToggled, (newValue) => {
+  if (newValue) {
+    toast.add({ title: `Added ${props.crypto} to favourites!` });
+  } else {
+    toast.add({ title: `Removed ${props.crypto} from favourites!` });
+  }
+});
 </script>
