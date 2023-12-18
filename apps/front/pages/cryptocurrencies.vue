@@ -4,11 +4,11 @@
       Today's Cryptocurrency Prices by Market Cap
     </div>
     <div class="flex justify-between mb-8 mt-4">
-      <div className="form-control">
+      <div class="form-control">
         <input
           type="text"
           placeholder="Crypto search"
-          className="input input-bordered md:w-auto"
+          class="input input-bordered md:w-auto"
         />
       </div>
       <div class="join tooltip" data-tip="Show rows">
@@ -44,7 +44,7 @@
           <span class="font-bold">
             {{
               data.data.price && data.data.price.EUR
-                ? data.data.price.EUR.currentPrice.toFixed(2) + "€"
+                ? formatNumberWithSpaces(data.data.price.EUR.currentPrice.toFixed(2)) + "€"
                 : "N/A"
             }}
           </span>
@@ -87,14 +87,14 @@
         <template #market_cap="data">
           {{
             data.data.price && data.data.price.EUR
-              ? data.data.price.EUR.marketCap.toFixed(2) + "€"
+              ? formatNumberWithSpaces(data.data.price.EUR.marketCap.toFixed(2)) + "€"
               : "N/A"
           }}
         </template>
         <template #volume="data">
           {{
             data.data.price && data.data.price.EUR
-              ? data.data.price.EUR.totalVolume.toFixed(2) + "€"
+              ? formatNumberWithSpaces(data.data.price.EUR.totalVolume.toFixed(2)) + "€"
               : "N/A"
           }}
         </template>
@@ -131,6 +131,10 @@ const dataTable = ref<UIDataTable<any>>({
   data: [],
 });
 
+function formatNumberWithSpaces(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
 const getClass = (value) => {
   if (typeof value === "number") {
     return value < 0 ? "text-red-500 font-bold" : "text-green-500 font-bold";
@@ -151,7 +155,7 @@ const fetchCryptoData = async () => {
     const symbols = response.data.data.map((crypto) => crypto.symbol).join(",");
     const pricesResponse = await useFetchAPI<any>(
       "GET",
-      `/cryptos/prices/?symbols=${symbols}`
+      `/cryptos/prices?symbols=${symbols}`
     );
     if (pricesResponse.ok) {
       const pricesData = pricesResponse.data;
@@ -162,7 +166,6 @@ const fetchCryptoData = async () => {
         };
       });
       dataTable.value.data = combinedData;
-      console.log(dataTable.value.data);
     }
   } else {
     alert("Failed fetching data");
