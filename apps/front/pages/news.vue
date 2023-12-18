@@ -2,11 +2,11 @@
   <div class="p-4 mx-auto w-full md:w-4/5">
     <div class="text-4xl mb-10 font-semibold">Cryptocurrency News</div>
     <div class="flex justify-between mb-8 mt-4">
-      <div className="form-control">
+      <div class="form-control">
         <input
           type="text"
           placeholder="News search"
-          className="input input-bordered md:w-auto"
+          class="input input-bordered md:w-auto"
         />
       </div>
       <div class="join tooltip" data-tip="Show rows">
@@ -84,7 +84,6 @@ const fetchCryptoData = async () => {
     `/articles`
   );
   if (response.ok) {
-    console.log(response.data);
     cryptoData.value = response.data;
   } else {
     console.error("Failed to fetch crypto data", response.error);
