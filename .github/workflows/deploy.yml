@@ -3,8 +3,6 @@ name: Deploy
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   deploy:
@@ -90,3 +88,5 @@ jobs:
         run: ts-node ./packages/models/src/seed.ts
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}
