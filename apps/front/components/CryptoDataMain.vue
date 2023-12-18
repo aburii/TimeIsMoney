@@ -62,63 +62,86 @@
         class="bg-base-200 p-2 rounded-xl border border-base-300 shadow my-2 sm:my-0"
       >
         <span
-          @click="selectedChartPeriode = '1D'"
+          @click="selectedChartPeriode = 'minute'"
           :class="[
             'inline-block p-2 sm:p-3 mx-1 sm:mx-2 rounded-xl text-xs sm:text-base',
-            selectedChartPeriode === '1D' ? 'bg-base-300 ' : '',
+            selectedChartPeriode === 'minute' ? 'bg-base-300 ' : '',
           ]"
-          >1D</span
+          >Minute</span
         >
         <span
-          @click="selectedChartPeriode = '7D'"
+          @click="selectedChartPeriode = 'hour'"
           :class="[
             'inline-block p-2 sm:p-3 mx-1 sm:mx-2 rounded-xl text-xs sm:text-base',
-            selectedChartPeriode === '7D' ? 'bg-base-300 ' : '',
+            selectedChartPeriode === 'hour' ? 'bg-base-300 ' : '',
           ]"
-          >7D</span
+          >Hour</span
         >
         <span
-          @click="selectedChartPeriode = '1M'"
+          @click="selectedChartPeriode = 'day'"
           :class="[
             'inline-block p-2 sm:p-3 mx-1 sm:mx-2 rounded-xl text-xs sm:text-base',
-            selectedChartPeriode === '1M' ? 'bg-base-300 ' : '',
+            selectedChartPeriode === 'day' ? 'bg-base-300 ' : '',
           ]"
-          >1M</span
+          >Day</span
         >
       </div>
     </div>
 
     <!-- CHART SECTION -->
-    <div class="w-full">
+    <div class="w-full" v-if="!chartLoading">
       <chart
         :key="selectedChartType"
         :chartData="Data"
-        :openPrice="openPrice"
+        :openPrice="openPrice.value"
         :chartType="selectedChartType"
         class="border border-base-300 shadow m-4"
       />
     </div>
 
+    <div
+      class="flex justify-center items-center w-full h-96"
+      v-if="chartLoading"
+    >
+      <div class="border border-base-300 shadow m-4">
+        <span class="loading loading-spinner loading-xl"></span>
+      </div>
+    </div>
+
     <div id="news" class="mx-4 text-5xl font-semibold p-4 my-4">
-      {{ $route.params.crypto }} news
+      {{ cryptoData.coinName }} News
     </div>
 
     <div class="w-full rounded-xl">
       <div
-        class="mx-4 mb-8 bg-base-200 rounded-xl p-4 mb-4 border border-base-300 shadow"
-        v-for="n in 10"
-        :key="n"
+        v-for="article in firstTenArticles"
+        :key="article.id"
+        class="mx-4 mb-8 bg-base-200 rounded-xl p-4 border border-base-300 shadow flex"
       >
-        <div class="">
-          <div class="text-xs mb-2">{{ n * 2 }} minutes ago</div>
-          <div class="font-bold text-3xl mb-2">News Article #{{ n }}</div>
-          <div class="flex w-2/4">This is a news article</div>
+        <div class="flex-grow">
+          <div class="text-xs mb-2">
+            {{ convertTimestampToTimeAgo(article.publishedOn) }} ago
+          </div>
+          <div class="font-bold text-3xl mb-2 custom-title">
+            {{ article.title }}
+          </div>
+          <div class="overflow-y-auto max-h-50 custom-ellipsis">
+            {{ article.body }}
+          </div>
+          <a :href="article.url" target="_blank" class="text-primary mt-2"
+            >Read more</a
+          >
         </div>
+        <img
+          :src="article.imageUrl"
+          alt="Article Image"
+          class="ml-4 self-start w-32 h-32 object-cover rounded"
+        />
       </div>
     </div>
 
     <div id="about" class="mx-4 text-5xl font-semibold p-4 my-4">
-      About {{ $route.params.crypto }}
+      About {{ cryptoData.coinName }}
     </div>
 
     <div class="w-full h-full rounded-xl px-4">
@@ -127,21 +150,10 @@
       >
         <input type="radio" name="my-accordion-2" checked="checked" />
         <div class="collapse-title text-xl font-medium">
-          What is {{ $route.params.crypto }} ?
+          What is {{ cryptoData.coinName }} ?
         </div>
         <div class="collapse-content">
-          <p>info</p>
-        </div>
-      </div>
-      <div
-        class="collapse collapse-arrow bg-base-200 border border-primary mb-4"
-      >
-        <input type="radio" name="my-accordion-2" />
-        <div class="collapse-title text-xl font-medium">
-          Who created {{ $route.params.crypto }} ?
-        </div>
-        <div class="collapse-content">
-          <p>info</p>
+          <p>{{ cryptoData.description }}</p>
         </div>
       </div>
     </div>
@@ -149,12 +161,19 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
+import { useFetchAPI } from "../composables/fetch.ts";
 
 const route = useRoute();
 const selectedTab = ref("charts");
 const selectedChartType = ref("line");
-const selectedChartPeriode = ref("1D");
+const selectedChartPeriode = ref("minute");
+const rawHistoryData = ref([]);
+const cryptoData = ref([]);
+const cryptoNews = ref([]);
+const Data = ref([]);
+const chartLoading = ref(true);
+const openPrice = ref(0);
 
 const handleButtonClick = (tabName) => {
   selectedTab.value = tabName;
@@ -168,69 +187,120 @@ const scrollTo = async (sectionId) => {
   }
 };
 
-const openPrice = 33120;
+function convertTimestampToTimeAgo(timestamp) {
+  const timeElapsed = Date.now() - new Date(timestamp * 1000);
+  const seconds = Math.floor(timeElapsed / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
 
-const lineSampleData = [
-  [new Date("2023-01-22T00:00:00").getTime(), 34120],
-  [new Date("2023-01-22T01:00:00").getTime(), 34140],
-  [new Date("2023-01-22T02:00:00").getTime(), 34190],
-  [new Date("2023-01-22T03:00:00").getTime(), 33400],
-  [new Date("2023-01-22T04:00:00").getTime(), 34050],
-  [new Date("2023-01-22T05:00:00").getTime(), 35120],
-  [new Date("2023-01-22T06:00:00").getTime(), 34050],
-  [new Date("2023-01-22T07:00:00").getTime(), 34424],
-  [new Date("2023-01-22T08:00:00").getTime(), 33130],
-  [new Date("2023-01-22T09:00:00").getTime(), 34200],
-  [new Date("2023-01-22T10:00:00").getTime(), 31100],
-  [new Date("2023-01-22T11:00:00").getTime(), 31050],
-  [new Date("2023-01-22T12:00:00").getTime(), 31000],
-  [new Date("2023-01-22T13:00:00").getTime(), 32000],
-  [new Date("2023-01-22T14:00:00").getTime(), 32130],
-  [new Date("2023-01-22T15:00:00").getTime(), 32140],
-  [new Date("2023-01-22T16:00:00").getTime(), 32000],
-  [new Date("2023-01-22T17:00:00").getTime(), 31400],
-  [new Date("2023-01-22T18:00:00").getTime(), 34100],
-  [new Date("2023-01-22T19:00:00").getTime(), 34300],
-  [new Date("2023-01-22T20:00:00").getTime(), 34700],
-  [new Date("2023-01-22T21:00:00").getTime(), 36340],
-  [new Date("2023-01-22T22:00:00").getTime(), 37280],
-  [new Date("2023-01-22T23:00:00").getTime(), 36780],
-];
-
-const candlestickSampleData = [
-  [new Date("2023-01-22T00:00:00").getTime(), 34120, 33000, 35000, 34000],
-  [new Date("2023-01-22T01:00:00").getTime(), 34000, 33500, 34200, 33600],
-  [new Date("2023-01-22T02:00:00").getTime(), 33600, 33000, 33700, 33150],
-  [new Date("2023-01-22T03:00:00").getTime(), 33150, 32900, 33300, 33000],
-  [new Date("2023-01-22T04:00:00").getTime(), 33000, 32800, 33200, 32950],
-  [new Date("2023-01-22T05:00:00").getTime(), 32950, 32700, 33050, 32800],
-  [new Date("2023-01-22T06:00:00").getTime(), 32800, 32600, 32900, 32750],
-  [new Date("2023-01-22T07:00:00").getTime(), 32750, 32500, 32800, 32600],
-  [new Date("2023-01-22T08:00:00").getTime(), 32600, 32400, 32700, 32550],
-  [new Date("2023-01-22T09:00:00").getTime(), 32550, 32300, 32600, 32400],
-  [new Date("2023-01-22T10:00:00").getTime(), 32400, 32200, 32500, 32350],
-  [new Date("2023-01-22T11:00:00").getTime(), 32350, 32100, 32400, 32200],
-  [new Date("2023-01-22T12:00:00").getTime(), 32200, 32000, 32300, 32150],
-  [new Date("2023-01-22T13:00:00").getTime(), 32150, 31900, 32200, 32000],
-  [new Date("2023-01-22T14:00:00").getTime(), 32150, 34100, 34050, 34000],
-  [new Date("2023-01-22T14:00:00").getTime(), 32150, 34100, 34050, 34000],
-  [new Date("2023-01-22T14:00:00").getTime(), 32150, 34100, 34050, 34000],
-  [new Date("2023-01-22T15:00:00").getTime(), 31950, 31700, 32000, 31800],
-  [new Date("2023-01-22T16:00:00").getTime(), 31800, 31600, 31900, 31750],
-  [new Date("2023-01-22T17:00:00").getTime(), 31750, 31500, 31800, 31600],
-  [new Date("2023-01-22T18:00:00").getTime(), 31600, 31400, 31700, 31550],
-  [new Date("2023-01-22T19:00:00").getTime(), 31550, 31300, 31600, 31400],
-  [new Date("2023-01-22T20:00:00").getTime(), 31400, 31200, 31500, 31350],
-  [new Date("2023-01-22T21:00:00").getTime(), 31350, 31100, 31400, 31200],
-  [new Date("2023-01-22T22:00:00").getTime(), 31200, 31000, 31300, 31150],
-  [new Date("2023-01-22T23:00:00").getTime(), 31150, 30900, 31200, 31000],
-];
-
-const Data = computed(() => {
-  if (selectedChartType.value === "line") {
-    return lineSampleData;
+  if (seconds < 60) {
+    return `${seconds} seconds ago`;
+  } else if (minutes < 60) {
+    return `${minutes} minutes ago`;
+  } else if (hours < 24) {
+    return `${hours} hours ago`;
   } else {
-    return candlestickSampleData;
+    return `${days} days ago`;
   }
+}
+
+const firstTenArticles = computed(() => {
+  return cryptoNews.value.slice(0, 5);
 });
+
+const formatDataForChartType = (historyData, chartType) => {
+  return historyData.map((item) => {
+    const timestamp = new Date(item.timeIso).getTime();
+    return chartType === "line"
+      ? [timestamp, item.open]
+      : [timestamp, item.open, item.high, item.low, item.close];
+  });
+};
+
+// const openPrice = computed(() => {
+//   if (Data.value.length > 0 && selectedChartType.value === "line") {
+//     return Data.value[0][1] * 1.1;
+//   }
+//   return 0;
+// });
+
+// Function to fetch historical data for a cryptocurrency
+const fetchHistoricalData = async () => {
+  chartLoading.value = true;
+  const cryptoSymbol = route.params.crypto || "BTC";
+  const aggregate = 1;
+  let limit;
+  switch (selectedChartPeriode.value) {
+    case "minute":
+      limit = 60;
+      break;
+    case "hour":
+      limit = 24;
+      break;
+    case "day":
+      limit = 7;
+      break;
+    default:
+      limit = 60;
+      break;
+  }
+  const period = selectedChartPeriode.value;
+  const response = await useFetchAPI(
+    "GET",
+    `/cryptos/${cryptoSymbol}/history/${period}?limit=${limit}&aggregate=${aggregate}`
+  );
+
+  if (response.ok) {
+    rawHistoryData.value = response.data.history;
+    openPrice.value = rawHistoryData.value[0][1] * 0.9999;
+    Data.value = formatDataForChartType(
+      rawHistoryData.value,
+      selectedChartType.value
+    );
+    chartLoading.value = false;
+  } else {
+    console.error("Failed to fetch historical data:", response.error);
+    alert("Failed to fetch historical data");
+  }
+};
+
+// Function to get details for a cryptocurrency
+const fetchCryptoData = async () => {
+  const cryptoSymbol = route.params.crypto || "BTC";
+  const response = await useFetchAPI(
+    "GET",
+    `/cryptos/${cryptoSymbol}/details`
+  );
+  if (response.ok) {
+    cryptoData.value = response.data;
+    const response2 = await useFetchAPI(
+      "GET",
+      `/cryptos/${cryptoSymbol}/articles`
+    );
+    if (response2.ok) {
+      cryptoNews.value = response2.data.pages;
+    }
+  } else {
+    console.error("Failed to fetch crypto data", response.error);
+    alert("Failed to fetch crypto data");
+  }
+};
+
+onMounted(() => {
+  fetchCryptoData();
+  fetchHistoricalData();
+});
+
+watch(selectedChartType, (newChartType) => {
+  Data.value = formatDataForChartType(rawHistoryData.value, newChartType);
+});
+
+watch(
+  selectedChartPeriode,
+  () => {
+    fetchHistoricalData();
+  },
+  { immediate: true }
+);
 </script>

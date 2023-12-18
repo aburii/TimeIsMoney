@@ -1,24 +1,27 @@
 <template>
-  <div v-if="chartType === 'line'">
-    <apexchart
-      :key="series"
-      :options="chartOptions"
-      :series="chartSeries"
-      class="bg-base-200"
-    ></apexchart>
+  <div v-if="chartData">
+    <div v-if="chartType === 'line'">
+      <apexchart
+        :key="series"
+        :options="chartOptions"
+        :series="chartSeries"
+        class="bg-base-200"
+      ></apexchart>
+    </div>
+    <div v-else-if="chartType === 'candle'">
+      <apexchart
+        :key="candlestickChartSeries"
+        :options="candlestickChartOptions"
+        :series="candlestickChartSeries"
+        class="bg-base-200"
+      ></apexchart>
+    </div>
   </div>
-  <div v-else-if="chartType === 'candle'">
-    <apexchart
-      :key="candlestickChartSeries"
-      :options="candlestickChartOptions"
-      :series="candlestickChartSeries"
-      class="bg-base-200"
-    ></apexchart>
-  </div>
+  <div v-else>Loading ...</div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { defineProps } from "vue";
 
 const props = defineProps({
@@ -175,7 +178,7 @@ const candlestickChartOptions = ref({
       enabled: true,
     },
   },
-    xaxis: {
+  xaxis: {
     type: "datetime",
   },
 });
@@ -186,4 +189,37 @@ const candlestickChartSeries = ref([
     data: formattedCandlestickData,
   },
 ]);
+
+const updateChartData = () => {
+  if (props.chartType === "line") {
+    chartSeries.value = splitDataWithIntersections(
+      props.chartData,
+      props.openPrice
+    ).map((segment) => ({
+      name:
+        segment.color === "#00E396" ? "Above Open Price" : "Below Open Price",
+      data: segment.data,
+      type: "line",
+      color: segment.color,
+    }));
+  } else if (props.chartType === "candle") {
+    candlestickChartSeries.value = [
+      {
+        name: "Candlestick",
+        data: props.chartData.map((d) => ({
+          x: d[0],
+          y: [d[1], d[2], d[3], d[4]],
+        })),
+      },
+    ];
+  }
+};
+
+watch(
+  () => props.chartData,
+  () => {
+    updateChartData();
+  },
+  { deep: true, immediate: true }
+);
 </script>

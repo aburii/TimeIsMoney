@@ -12,7 +12,9 @@
         />
       </div>
       <div class="join tooltip" data-tip="Show rows">
-        <button class="join-item btn-xs sm:btn btn btn-active h-12 sm:h-auto">
+        <button
+          class="join-item btn-xs sm:btn btn btn-active sm:btn-active h-12 sm:h-auto"
+        >
           25
         </button>
         <button class="join-item btn-xs sm:btn btn h-12 sm:h-auto">50</button>
@@ -22,40 +24,79 @@
     <div class="overflow-x-auto border rounded-xl border-base-300">
       <UITable id="table" class="table" :table-data="dataTable">
         <template #name="data">
-          <div class="flex flex-between gap-2">
-             <Star />
-          <NuxtLink :to="`/cryptocurrency/${data.data.name}`">
-            <span class="font-bold">{{ data.data.name }}</span>
-            <span class="ml-2">{{ data.data.symbol }}</span>
-          </NuxtLink>
+          <div class="flex items-center gap-4">
+            <Star :crypto="data.data.name" />
+            <NuxtLink
+              :to="`/cryptocurrency/${data.data.symbol}`"
+              class="flex items-center gap-2"
+            >
+              <img
+                :src="data.data.image_url"
+                alt="Crypto Icon"
+                class="h-6 w-6"
+              />
+              <span class="font-bold">{{ data.data.name }}</span>
+              <span>{{ data.data.symbol }}</span>
+            </NuxtLink>
           </div>
-        </template>
-        <template #id="data">
-          {{ data.data.id }}
         </template>
         <template #price="data">
           <span class="font-bold">
-            {{ data.data.price }}
+            {{
+              data.data.price && data.data.price.EUR
+                ? data.data.price.EUR.currentPrice.toFixed(2) + "€"
+                : "N/A"
+            }}
           </span>
         </template>
-        <template #h="data">
-          <span :class="getClass(data.data.h)">
-            {{ data.data.h }}
+        <template #last24hCandle="data">
+          <span
+            :class="
+              getClass(
+                data.data.price && data.data.price.EUR
+                  ? data.data.price.EUR.last24hCandle.changePercent
+                  : 0
+              )
+            "
+          >
+            {{
+              data.data.price && data.data.price.EUR
+                ? data.data.price.EUR.last24hCandle.changePercent.toFixed(2) +
+                  "%"
+                : "N/A"
+            }}
           </span>
         </template>
-        <template #d="data">
-          <span :class="getClass(data.data.d)">
-            {{ data.data.d }}
+        <template #hourCandle="data">
+          <span
+            :class="
+              getClass(
+                data.data.price && data.data.price.EUR
+                  ? data.data.price.EUR.hourCandle.changePercent
+                  : 0
+              )
+            "
+          >
+            {{
+              data.data.price && data.data.price.EUR
+                ? data.data.price.EUR.hourCandle.changePercent.toFixed(2) + "%"
+                : "N/A"
+            }}
           </span>
         </template>
         <template #market_cap="data">
-          {{ data.data.market_cap }}
+          {{
+            data.data.price && data.data.price.EUR
+              ? data.data.price.EUR.marketCap.toFixed(2) + "€"
+              : "N/A"
+          }}
         </template>
         <template #volume="data">
-          {{ data.data.volume }}
-        </template>
-        <template #circulating_supply="data">
-          {{ data.data.circulating_supply }}
+          {{
+            data.data.price && data.data.price.EUR
+              ? data.data.price.EUR.totalVolume.toFixed(2) + "€"
+              : "N/A"
+          }}
         </template>
       </UITable>
     </div>
@@ -73,96 +114,62 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import type { UIDataTable } from "@timeismoney/ui-components/types/ui-table";
+import { useFetchAPI } from "../composables/fetch.ts";
+const currentPage = ref(1);
+const pageSize = ref(25);
+const totalRecords = ref(0);
 
-const data = [
-  {
-    id: "1",
-    name: "Bitcoin",
-    symbol: "BTC",
-    price: "€34,121.39",
-    h: "-3.33%",
-    d: "+5.66%",
-    market_cap: "€667,415,211,967",
-    volume: "€15,287,475,652",
-    circulating_supply: "19,554,218 BTC",
-  },
-  {
-    id: "2",
-    name: "Ethereum",
-    symbol: "ETH",
-    price: "€1,868.37",
-    h: "-1.83%",
-    d: "+11.34%",
-    market_cap: "€224,662,403,391",
-    volume: "€8,562,083,222",
-    circulating_supply: "19,554,218 ETH",
-  },
-  {
-    id: "3",
-    name: "Binance Coin",
-    symbol: "BNB",
-    price: "€412.77",
-    h: "-1.12%",
-    d: "+4.67%",
-    market_cap: "€64,415,211,967",
-    volume: "€2,287,475,652",
-    circulating_supply: "155,536,713 BNB",
-  },
-
-  {
-    id: "4",
-    name: "Ripple",
-    symbol: "XRP",
-    price: "€0.76",
-    h: "+0.33%",
-    d: "+2.56%",
-    market_cap: "€35,415,211,967",
-    volume: "€1,987,475,652",
-    circulating_supply: "46,542,367,512 XRP",
-  },
-  {
-    id: "5",
-    name: "Solana",
-    symbol: "SOL",
-    price: "€102.39",
-    h: "+1.33%",
-    d: "+8.66%",
-    market_cap: "€33,415,211,967",
-    volume: "€3,287,475,652",
-    circulating_supply: "286,370,150 SOL",
-  },
-  {
-    id: "6",
-    name: "Cardano",
-    symbol: "ADA",
-    price: "€0.95",
-    h: "-2.50%",
-    d: "+3.20%",
-    market_cap: "€30,662,403,391",
-    volume: "€1,562,083,222",
-    circulating_supply: "31,948,309 ADA",
-  },
-];
-
-const dataTable: UIDataTable<{ id: string; name: string }> = {
+const dataTable = ref<UIDataTable<any>>({
   heading: [
-    {
-      key: "name",
-      label: "Name",
-    },
+    { key: "name", label: "Name" },
     { key: "price", label: "Price" },
-    { key: "h", label: "24h %" },
-    { key: "d", label: "7d %" },
+    { key: "last24hCandle", label: "24h %" },
+    { key: "hourCandle", label: "Last Hour %" },
     { key: "market_cap", label: "Market Cap" },
-    { key: "volume", label: "Volume(24h)" },
-    { key: "circulating_supply", label: "Circulating Supply" },
+    { key: "volume", label: "Volume" },
   ],
-  data,
+  data: [],
+});
+
+const getClass = (value) => {
+  if (typeof value === "number") {
+    return value < 0 ? "text-red-500 font-bold" : "text-green-500 font-bold";
+  } else if (typeof value === "string") {
+    return value.startsWith("-")
+      ? "text-red-500 font-bold"
+      : "text-green-500 font-bold";
+  }
+  return "";
 };
 
-const getClass = (value: string) => {
-  return value.startsWith("-")
-    ? "text-red-500 font-bold"
-    : "text-green-500 font-bold";
+const fetchCryptoData = async () => {
+  const response = await useFetchAPI<any[]>(
+    "GET",
+    "/cryptos/"
+  );
+  if (response.ok) {
+    const symbols = response.data.data.map((crypto) => crypto.symbol).join(",");
+    const pricesResponse = await useFetchAPI<any>(
+      "GET",
+      `/cryptos/prices/?symbols=${symbols}`
+    );
+    if (pricesResponse.ok) {
+      const pricesData = pricesResponse.data;
+      const combinedData = response.data.data.map((crypto) => {
+        return {
+          ...crypto,
+          price: pricesData[crypto.symbol],
+        };
+      });
+      dataTable.value.data = combinedData;
+      console.log(dataTable.value.data);
+    }
+  } else {
+    alert("Failed fetching data");
+  }
 };
+
+onMounted(async () => {
+  fetchCryptoData();
+});
 </script>

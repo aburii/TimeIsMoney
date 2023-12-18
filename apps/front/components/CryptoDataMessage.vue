@@ -1,12 +1,12 @@
 <template>
-  <div class="text-xl rounded-xl font-semibold pb-2 mt-4 mx-3 mb-4"><div class="">Project Announcements</div></div>
+  <!-- <div class="text-xl rounded-xl font-semibold pb-2 mt-4 mx-3 mb-4"><div class="">Project Announcements</div></div>
   <div class="overflow-y-auto pb-4 px-4 h-fit max-h-72 border-b ">
     <div v-for="n in 2" :key="n" class="mb-4">
       <div class=" skeleton text-sm bg-base-200 rounded-xl p-4  border border-primary ">
         Project Announcement #{{ n }}
       </div>
     </div>
-  </div>
+  </div> -->
   <div class="text-xl rounded-xl font-semibold pb-4 mt-4 mx-3 ">Message Board</div>
   <!-- Scrollable message area -->
   <div class="flex-1 overflow-y-auto mb-4 p-2">
