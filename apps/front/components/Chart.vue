@@ -122,7 +122,7 @@ const chartOptions = ref({
   },
   tooltip: {
     x: {
-      format: "dd MMM yyyy",
+      format: "dd MMM yyyy HH:mm:ss",
     },
   },
   markers: {
@@ -178,6 +178,11 @@ const candlestickChartOptions = ref({
       enabled: true,
     },
   },
+  tooltip: {
+    x: {
+      format: "dd MMM yyyy HH:mm:ss",
+    },
+  },
   xaxis: {
     type: "datetime",
   },
@@ -196,8 +201,7 @@ const updateChartData = () => {
       props.chartData,
       props.openPrice
     ).map((segment) => ({
-      name:
-        segment.color === "#00E396" ? "Above Open Price" : "Below Open Price",
+      name: "Price",
       data: segment.data,
       type: "line",
       color: segment.color,
