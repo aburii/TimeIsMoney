@@ -25,7 +25,7 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.userService.findOneByEmail(email);
 
-    if (!user) return null;
+    if (!user || user.provider === Provider.GOOGLE) return null;
 
     const compare = await compareHash(user.password, password);
 
