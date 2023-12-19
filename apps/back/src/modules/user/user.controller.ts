@@ -32,7 +32,7 @@ export class UserController {
   private async canEditUser(
     currentUser: IRequestUser,
     userId: number,
-  ): Promise<Boolean> {
+  ): Promise<boolean> {
     const dbUser = await this.userService.findOne(currentUser.userId);
 
     return (
@@ -69,11 +69,8 @@ export class UserController {
   }
 
   @Get(':id/followed')
-  async followedCryptos(
-    @RequestUser() user: IRequestUser,
-    @Param('id', ParseIntPipe) id: number,
-  ) {
-    return await this.userService.followedCryptos(user.userId);
+  async followedCryptos(@Param('id', ParseIntPipe) id: number) {
+    return await this.userService.followedCryptos(id);
   }
 
   @UseInterceptors(UserInterceptor)
@@ -84,7 +81,9 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
     @Query('crudQuery') crudQuery: string,
   ) {
-    if (!this.canEditUser(user, id)) {
+    const canEdit = await this.canEditUser(user, id);
+
+    if (!canEdit) {
       throw new ForbiddenException(
         'You do not have permission to edit this user.',
       );
@@ -103,7 +102,9 @@ export class UserController {
     @Query('cryptos', new ParseArrayPipe({ items: Number, separator: ',' }))
     cryptos: number[],
   ) {
-    if (!this.canEditUser(user, id)) {
+    const canEdit = await this.canEditUser(user, id);
+
+    if (!canEdit) {
       throw new ForbiddenException(
         'You do not have permission to edit this user.',
       );
@@ -120,7 +121,8 @@ export class UserController {
     @Query('cryptos', new ParseArrayPipe({ items: Number, separator: ',' }))
     cryptos: number[],
   ) {
-    if (!this.canEditUser(user, id)) {
+    const canEdit = await this.canEditUser(user, id);
+    if (!canEdit) {
       throw new ForbiddenException(
         'You do not have permission to edit this user.',
       );
@@ -135,7 +137,8 @@ export class UserController {
     @Param('id', ParseIntPipe) id: number,
     @Query('crudQuery') crudQuery: string,
   ) {
-    if (!this.canEditUser(user, id)) {
+    const canEdit = await this.canEditUser(user, id);
+    if (!canEdit) {
       throw new ForbiddenException(
         'You do not have permission to edit this user.',
       );

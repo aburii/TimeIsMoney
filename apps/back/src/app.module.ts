@@ -7,6 +7,7 @@ import { CryptoModule } from './modules/crypto/crypto.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ArticleModule } from './modules/article/article.module';
 import { ConfigModule } from '@nestjs/config';
+import { BoModule } from './modules/bo/bo.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ConfigModule } from '@nestjs/config';
     CryptoModule,
     AuthModule,
     ArticleModule,
+    BoModule,
   ],
 })
 export class AppModule {}

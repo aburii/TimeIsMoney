@@ -3,14 +3,18 @@ import { useSessionStore } from "~/stores/session";
 type Ok<T> = { ok: true; data: T };
 type Err = { ok: false; status: number };
 
+const runtimeConfig = useRuntimeConfig();
+const ENDPOINT = `${runtimeConfig.public.BACK_URL}`;
+
 export async function useFetchAPI<T>(
   method: "GET" | "POST" | "PUT" | "DELETE",
   url: string,
   body?: any,
 ): Promise<Ok<T> | Err> {
   const session = useSessionStore();
+  const fullUrl = `${ENDPOINT}/${url}`;
 
-  const response = await fetch(url, {
+  const response = await fetch(fullUrl, {
     credentials: "include",
     headers: {
       "Content-type": "application/json",
