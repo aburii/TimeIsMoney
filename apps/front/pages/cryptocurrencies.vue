@@ -25,7 +25,7 @@
       <UITable id="table" class="table" :table-data="dataTable">
         <template #name="data">
           <div class="flex items-center gap-4">
-            <Star :crypto="data.data.name" />
+            <Star />
             <NuxtLink
               :to="`/cryptocurrency/${data.data.symbol}`"
               class="flex items-center gap-2"
@@ -44,7 +44,9 @@
           <span class="font-bold">
             {{
               data.data.price && data.data.price.EUR
-                ? formatNumberWithSpaces(data.data.price.EUR.currentPrice.toFixed(2)) + "€"
+                ? formatNumberWithSpaces(
+                    data.data.price.EUR.currentPrice.toFixed(2)
+                  ) + "€"
                 : "N/A"
             }}
           </span>
@@ -87,14 +89,18 @@
         <template #market_cap="data">
           {{
             data.data.price && data.data.price.EUR
-              ? formatNumberWithSpaces(data.data.price.EUR.marketCap.toFixed(2)) + "€"
+              ? formatNumberWithSpaces(
+                  data.data.price.EUR.marketCap.toFixed(2)
+                ) + "€"
               : "N/A"
           }}
         </template>
         <template #volume="data">
           {{
             data.data.price && data.data.price.EUR
-              ? formatNumberWithSpaces(data.data.price.EUR.totalVolume.toFixed(2)) + "€"
+              ? formatNumberWithSpaces(
+                  data.data.price.EUR.totalVolume.toFixed(2)
+                ) + "€"
               : "N/A"
           }}
         </template>
@@ -147,10 +153,7 @@ const getClass = (value) => {
 };
 
 const fetchCryptoData = async () => {
-  const response = await useFetchAPI<any[]>(
-    "GET",
-    "/cryptos/"
-  );
+  const response = await useFetchAPI<any[]>("GET", "/cryptos/");
   if (response.ok) {
     const symbols = response.data.data.map((crypto) => crypto.symbol).join(",");
     const pricesResponse = await useFetchAPI<any>(

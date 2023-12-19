@@ -1,9 +1,9 @@
 <template>
-  <div v-if="cryptoData.coinName" class="absolute top-0 right-0 p-2 text-xl">
-    <Star :crypto="cryptoData.coinName" />
+  <div v-if="cryptoData" class="absolute top-0 right-4 p-2 text-xl">
+    <Star />
   </div>
   <!-- Content for left sidebar -->
-  <div v-if="cryptoData.coinName" class="mb-6 mx-4">
+  <div v-if="cryptoData.coinName && cryptoData2.length !== 0" class="mb-6 mx-4">
     <div class="flex items-center mt-4">
       <img
         :src="cryptoData.imageUrl"
@@ -13,7 +13,7 @@
       <h2 class="text-3xl font-semibold">{{ cryptoData.coinName }}</h2>
       <h2 class="text-lg ml-2">{{ cryptoData.symbol }}</h2>
     </div>
-    <div class="text-5xl flex items-center font-bold">
+    <div class="text-4xl flex items-center font-bold">
       {{ formatNumberWithSpaces(Number(cryptoData2.currentPrice).toFixed(2)) }}
       €
       <div
@@ -23,7 +23,9 @@
           'text-red-500': cryptoData2.hourCandle?.changePercent < 0,
         }"
       >
-        {{ Number(cryptoData2.hourCandle.changePercent).toFixed(3) + "% (1h)" }}
+        {{
+          Number(cryptoData2.hourCandle?.changePercent).toFixed(3) + "% (1h)"
+        }}
       </div>
     </div>
   </div>
@@ -132,12 +134,13 @@
 import { ref, onMounted } from "vue";
 import { useFetchAPI } from "../composables/fetch.ts";
 import { defineProps } from "vue";
+
 const route = useRoute();
 const isToggled = ref(false);
 const cryptoData2 = ref([]);
 const props = defineProps({
   cryptoData: {
-    type: Array,
+    type: Object,
     required: true,
   },
 });

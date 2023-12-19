@@ -23,26 +23,38 @@
       <div
         v-for="article in cryptoData"
         :key="article.id"
-        class="mx-4 mb-8 bg-base-200 rounded-xl p-4 border border-base-300 shadow flex"
+        class="mx-4 mb-8 bg-base-200 rounded-xl p-4 border border-base-300 shadow flex flex-col md:flex-row"
       >
-        <div class="flex-grow">
-          <div class="text-xs mb-2">
-            {{ convertTimestampToTimeAgo(article.publishedOn) }} ago
-          </div>
-          <div class="font-bold text-3xl mb-2">{{ article.title }}</div>
-          <div class="overflow-y-auto max-h-50 custom-ellipsis2">
-            {{ article.body }}
-          </div>
-          <a :href="article.url" target="_blank" class="text-primary mt-2"
-            >Read more</a
-          >
-        </div>
         <img
           :src="article.imageUrl"
           alt="Article Image"
-          class="ml-4 self-start w-50 h-50 object-cover rounded"
+          class="self-start w-full md:w-32 md:h-32 object-cover rounded mb-4 md:mb-0 md:ml-4 mr-2"
         />
+        <div class="flex-grow">
+          <div class="text-xs md:text-sm mb-2">
+            {{ convertTimestampToTimeAgo(article.publishedOn) }} ago
+          </div>
+          <div class="font-bold text-xl md:text-3xl mb-2 custom-title">
+            {{ article.title }}
+          </div>
+          <div
+            class="overflow-y-auto max-h-50 custom-ellipsis text-sm md:text-base"
+          >
+            {{ article.body }}
+          </div>
+          <a
+            :href="article.url"
+            target="_blank"
+            class="text-primary mt-2 text-sm md:text-base"
+            >Read more</a
+          >
+        </div>
       </div>
+      <div
+        v-if="cryptoData.length == 0"
+        v-for="n in 3"
+        class="mx-4 h-40 w-auto text-5xl font-semibold p-4 my-4 skeleton"
+      ></div>
     </div>
     <div class="flex justify-center mt-4">
       <div class="join">
@@ -79,10 +91,7 @@ function convertTimestampToTimeAgo(timestamp) {
 }
 
 const fetchCryptoData = async () => {
-  const response = await useFetchAPI(
-    "GET",
-    `/articles`
-  );
+  const response = await useFetchAPI("GET", `/articles`);
   if (response.ok) {
     cryptoData.value = response.data;
   } else {

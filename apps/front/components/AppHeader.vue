@@ -43,7 +43,7 @@
           <li><NuxtLink to="/news">News</NuxtLink></li>
           <!-- CURRENCY SELECTOR IN HARD CODE TO BE IMPLEMENTED -->
           <li>
-            <a @click="toggleCurrencySelector"
+            <a class="text-xs" @click="toggleCurrencySelector"
               ><svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
@@ -87,7 +87,7 @@
           >Login</NuxtLink
         >
         {{ session.user?.nickname }}
-        <Logout />
+        <Logout class="ml-2" />
       </div>
     </div>
   </header>

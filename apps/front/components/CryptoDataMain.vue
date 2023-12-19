@@ -1,11 +1,11 @@
 <template>
   <!-- Content for center -->
-  <div class="w-full border-b">
+  <div class="hidden w-full sm:hidden md:block">
     <nav class="grid grid-cols-3 items-center">
       <button
         :class="[
-          'text-xl  font-semibold p-8',
-          selectedTab === 'charts' ? 'border-primary border-b-4' : '',
+          'text-xl  font-semibold p-3',
+          selectedTab === 'charts' ? 'border-primary border-b-2' : 'border-b-2',
         ]"
         @click="handleButtonClick('charts')"
       >
@@ -13,8 +13,8 @@
       </button>
       <button
         :class="[
-          'text-xl font-semibold p-8',
-          selectedTab === 'news' ? 'border-primary border-b-4' : '',
+          'text-xl font-semibold p-3',
+          selectedTab === 'news' ? 'border-primary border-b-2' : 'border-b-2',
         ]"
         @click="handleButtonClick('news')"
       >
@@ -22,8 +22,8 @@
       </button>
       <button
         :class="[
-          'text-xl font-semibold p-8',
-          selectedTab === 'about' ? 'border-primary border-b-4' : '',
+          'text-xl font-semibold p-3',
+          selectedTab === 'about' ? 'border-primary border-b-2' : 'border-b-2',
         ]"
         @click="handleButtonClick('about')"
       >
@@ -33,57 +33,44 @@
   </div>
   <div class="flex-1 overflow-y-auto no-scrollbar">
     <!-- CHART FILTER -->
-    <div
-      id="charts"
-      class="flex flex-row items-center sm:flex-row justify-between m-2 sm:m-8"
-    >
-      <div
-        class="bg-base-200 p-2 rounded-xl border border-base-300 shadow my-2 sm:my-0"
-      >
-        <span
+    <div id="charts"></div>
+    <div class="flex mt-4 md:mx-4 mx-2 flex-row justify-between">
+      <div role="tablist" class="tabs tabs-boxed">
+        <a
           @click="selectedChartType = 'line'"
-          :class="[
-            'inline-block p-2 sm:p-3 mx-1 sm:mx-4 rounded-xl text-xs sm:text-base',
-            selectedChartType === 'line' ? 'bg-base-300 ' : '',
-          ]"
-          >Line</span
+          role="tab"
+          :class="['tab', selectedChartType === 'line' ? 'tab-active' : '']"
+          >Line</a
         >
-        <span
+        <a
           @click="selectedChartType = 'candle'"
-          :class="[
-            'inline-block p-2 sm:p-3 mx-1 sm:mx-2 rounded-xl text-xs sm:text-base',
-            selectedChartType === 'candle' ? 'bg-base-300 ' : '',
-          ]"
-          >Candlestick</span
+          role="tab"
+          :class="['tab', selectedChartType === 'candle' ? 'tab-active' : '']"
+          >Candlestick</a
         >
       </div>
 
-      <div
-        class="bg-base-200 p-2 rounded-xl border border-base-300 shadow my-2 sm:my-0"
-      >
-        <span
+      <div role="tablist" class="tabs tabs-boxed">
+        <a
           @click="selectedChartPeriode = 'minute'"
+          role="tab"
           :class="[
-            'inline-block p-2 sm:p-3 mx-1 sm:mx-2 rounded-xl text-xs sm:text-base',
-            selectedChartPeriode === 'minute' ? 'bg-base-300 ' : '',
+            'tab',
+            selectedChartPeriode === 'minute' ? 'tab-active' : '',
           ]"
-          >Minute</span
+          >Minute</a
         >
-        <span
+        <a
           @click="selectedChartPeriode = 'hour'"
-          :class="[
-            'inline-block p-2 sm:p-3 mx-1 sm:mx-2 rounded-xl text-xs sm:text-base',
-            selectedChartPeriode === 'hour' ? 'bg-base-300 ' : '',
-          ]"
-          >Hour</span
+          role="tab"
+          :class="['tab', selectedChartPeriode === 'hour' ? 'tab-active' : '']"
+          >Hour</a
         >
-        <span
+        <a
           @click="selectedChartPeriode = 'day'"
-          :class="[
-            'inline-block p-2 sm:p-3 mx-1 sm:mx-2 rounded-xl text-xs sm:text-base',
-            selectedChartPeriode === 'day' ? 'bg-base-300 ' : '',
-          ]"
-          >Day</span
+          role="tab"
+          :class="['tab', selectedChartPeriode === 'day' ? 'tab-active' : '']"
+          >Day</a
         >
       </div>
     </div>
@@ -93,61 +80,86 @@
       <chart
         :key="selectedChartType"
         :chartData="Data"
-        :openPrice="openPrice.value"
+        :openPrice="openPrice"
         :chartType="selectedChartType"
         class="border border-base-300 shadow m-4"
       />
     </div>
 
-    <div
-      class="flex justify-center items-center w-full h-96"
-      v-if="chartLoading"
-    >
-      <div class="border border-base-300 shadow m-4">
-        <span class="loading loading-spinner loading-xl"></span>
+    <div class="flex justify-center items-center" v-if="chartLoading">
+      <div
+        :style="{ height: '400px' }"
+        class="skeleton w-full shadow m-4 flex justify-center"
+      >
+        <span class="loading loading-ring text-primary loading-lg"></span>
       </div>
     </div>
 
-    <div id="news" class="mx-4 text-5xl font-semibold p-4 my-4">
+    <div
+      v-if="cryptoData.coinName"
+      id="news"
+      class="mx-4 text-5xl font-semibold p-4 my-4"
+    >
       {{ cryptoData.coinName }} News
     </div>
+    <div
+      v-else
+      id="news"
+      class="mx-4 w-1/3 h-12 text-5xl font-semibold p-4 my-4 skeleton"
+    ></div>
 
     <div class="w-full rounded-xl">
       <div
         v-for="article in firstTenArticles"
         :key="article.id"
-        class="mx-4 mb-8 bg-base-200 rounded-xl p-4 border border-base-300 shadow flex"
+        class="mx-4 mb-8 bg-base-200 rounded-xl p-4 border border-base-300 shadow flex flex-col md:flex-row"
       >
-        <div class="flex-grow">
-          <div class="text-xs mb-2">
-            {{ convertTimestampToTimeAgo(article.publishedOn) }} ago
-          </div>
-          <div class="font-bold text-3xl mb-2 custom-title">
-            {{ article.title }}
-          </div>
-          <div class="overflow-y-auto max-h-50 custom-ellipsis">
-            {{ article.body }}
-          </div>
-          <a :href="article.url" target="_blank" class="text-primary mt-2"
-            >Read more</a
-          >
-        </div>
         <img
           :src="article.imageUrl"
           alt="Article Image"
-          class="ml-4 self-start w-32 h-32 object-cover rounded"
+          class="self-start w-full md:w-32 md:h-32 object-cover rounded mb-4 md:mb-0 md:ml-4 mr-2"
         />
+        <div class="flex-grow">
+          <div class="text-xs md:text-sm mb-2">
+            {{ convertTimestampToTimeAgo(article.publishedOn) }} ago
+          </div>
+          <div class="font-bold text-xl md:text-3xl mb-2 custom-title">
+            {{ article.title }}
+          </div>
+          <div
+            class="overflow-y-auto max-h-50 custom-ellipsis text-sm md:text-base"
+          >
+            {{ article.body }}
+          </div>
+          <a
+            :href="article.url"
+            target="_blank"
+            class="text-primary mt-2 text-sm md:text-base"
+            >Read more</a
+          >
+        </div>
       </div>
+      <div
+        v-if="firstTenArticles.length == 0"
+        v-for="n in 3"
+        class="mx-4 h-40 w-auto text-5xl font-semibold p-4 my-4 skeleton"
+      ></div>
     </div>
 
-    <div id="about" class="mx-4 text-5xl font-semibold p-4 my-4">
+    <div
+      v-if="cryptoData.coinName"
+      id="about"
+      class="mx-4 text-5xl font-semibold p-4 my-4"
+    >
       About {{ cryptoData.coinName }}
     </div>
+    <div
+      v-else
+      class="mx-4 w-1/3 h-12 text-5xl font-semibold p-4 my-4 skeleton"
+    ></div>
 
-    <div class="w-full h-full rounded-xl px-4">
-      <div
-        class="collapse collapse-arrow bg-base-200 border border-primary mb-4"
-      >
+    <div v-if="cryptoData.description" class="w-full h-full rounded-xl px-4">
+      <div class="collapse collapse-arrow bg-base-200 mb-4">
         <input type="radio" name="my-accordion-2" checked="checked" />
         <div class="collapse-title text-xl font-medium">
           What is {{ cryptoData.coinName }} ?
@@ -157,6 +169,10 @@
         </div>
       </div>
     </div>
+    <div
+      v-else
+      class="mx-4 w-auto h-20 text-5xl font-semibold p-4 my-4 skeleton"
+    ></div>
   </div>
 </template>
 
@@ -176,7 +192,7 @@ const chartLoading = ref(true);
 const openPrice = ref(0);
 const props = defineProps({
   cryptoData: {
-    type: Array,
+    type: Object,
     required: true,
   },
 });
@@ -224,13 +240,6 @@ const formatDataForChartType = (historyData, chartType) => {
   });
 };
 
-// const openPrice = computed(() => {
-//   if (Data.value.length > 0 && selectedChartType.value === "line") {
-//     return Data.value[0][1] * 1.1;
-//   }
-//   return 0;
-// });
-
 // Function to fetch historical data for a cryptocurrency
 const fetchHistoricalData = async () => {
   chartLoading.value = true;
@@ -259,7 +268,8 @@ const fetchHistoricalData = async () => {
 
   if (response.ok) {
     rawHistoryData.value = response.data.history;
-    openPrice.value = rawHistoryData.value[0][1] * 0.9999;
+    openPrice.value = rawHistoryData.value[0].open;
+    console.log(rawHistoryData.value[0].open);
     Data.value = formatDataForChartType(
       rawHistoryData.value,
       selectedChartType.value

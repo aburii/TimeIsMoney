@@ -1,17 +1,13 @@
 <template>
   <!-- LAPTOP AND + VERSION -->
-  <div class="hidden md:flex h-full">
+  <div class="flex flex-col md:flex-row h-full">
     <!-- Left sidebar -->
-    <div class="w-1/4 border-r relative">
+    <div class="md:w-1/3 w-full relative h-auto md:h-full">
       <CryptoData :cryptoData="cryptoDetails" />
     </div>
     <!-- Main -->
-    <div class="w-1/2 flex flex-col">
+    <div class="md:w-2/3 flex md:border-l flex-col">
       <CryptoDataMain :cryptoData="cryptoDetails" />
-    </div>
-    <!-- Right sidebar -->
-    <div class="w-1/4 flex flex-col border-l">
-      <CryptoDataMessage />
     </div>
   </div>
 </template>
