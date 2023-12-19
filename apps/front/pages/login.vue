@@ -32,7 +32,7 @@
               v-model="email"
               type="email"
               placeholder="name@email.com"
-              class="flex items-center w-full px-5 py-4 mr-2 text-sm font-medium outline-none focus:bg-grey-400 mb-7 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
+              class="flex items-center w-full px-5 py-4 text-sm font-medium outline-none focus:bg-grey-400 mb-5 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
             />
             <label for="password" class="mb-2 text-sm text-start text-grey-900"
               >Password*</label
@@ -42,21 +42,28 @@
               v-model="password"
               type="password"
               placeholder="Enter a password"
-              class="flex items-center w-full px-5 py-4 mb-5 mr-2 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
+              class="flex items-center w-full px-5 py-4 mb-5 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
             />
             <button
-              class="btn w-full px-6 py-5 mb-5 text-sm font-bold text-grey-900 md:w-96 rounded-2xl"
+              class="btn btn-primary w-full px-6 my-5 text-sm font-bold text-grey-900 md:w-96 rounded-2xl"
             >
               Login
             </button>
-            <p class="text-sm leading-relaxed text-grey-900">
-              Not registered yet?
-              <NuxtLink to="/signup" class="justify-self-end"
-                ><a class="font-bold text-grey-700"
-                  >Create an Account</a
-                ></NuxtLink
-              >
-            </p>
+            <div>
+              <p class="text-sm leading-relaxed text-grey-900">
+                Not registered yet?
+                <NuxtLink to="/signup" class="justify-self-end"
+                  ><a class="font-bold text-grey-700"
+                    >Create an Account</a
+                  ></NuxtLink
+                >
+              </p>
+              <p class="text-sm leading-relaxed text-grey-900">
+                <NuxtLink to="/mentions" class="justify-self-end"
+                  ><a class="text-grey-700">Mentions légales et CGU</a>
+                </NuxtLink>
+              </p>
+            </div>
           </form>
         </div>
       </div>

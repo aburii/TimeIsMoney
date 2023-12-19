@@ -58,3 +58,35 @@ jobs:
         run: npx prisma migrate deploy
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+  seed:
+    needs: migrate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Install TypeScript
+        run: npm install -g typescript
+
+      - name: Install ts-node
+        run: npm install -g ts-node
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build dependencies
+        run: npm run build
+
+      - name: Run seed
+        run: ts-node ./packages/models/src/seed.ts
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          NODE_ENV: ${{ secrets.NODE_ENV }}

@@ -27,6 +27,9 @@ export class UserInterceptor implements NestInterceptor {
           updatedAt: data.updatedAt,
           currency: data.currencyId,
           pressKeywords: data.pressKeywords,
+          followedCryptoCurrencies: (data as any).followedCryptoCurrencies?.map(
+            (followedCurrency) => followedCurrency.currency,
+          ),
         };
       }),
     );
@@ -51,6 +54,9 @@ export class UsersListInterceptor implements NestInterceptor {
           updatedAt: user.updatedAt,
           currency: user.currencyId,
           pressKeywords: user.pressKeywords,
+          followedCryptoCurrencies: (data as any).followedCryptoCurrencies?.map(
+            (followedCurrency) => followedCurrency.currency,
+          ),
         }));
       }),
     );
