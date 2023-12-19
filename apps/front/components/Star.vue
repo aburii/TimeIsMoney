@@ -34,13 +34,6 @@
 <script setup>
 import { useSessionStore } from "~/stores/session";
 import { ref } from "vue";
-import { defineProps } from "vue";
-const props = defineProps({
-  crypto: {
-    type: String,
-    required: true,
-  },
-});
 
 const isToggled = ref(false);
 const session = useSessionStore();

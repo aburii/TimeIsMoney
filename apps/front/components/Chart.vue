@@ -2,7 +2,7 @@
   <div v-if="chartData">
     <div v-if="chartType === 'line'">
       <apexchart
-        :key="series"
+        :key="chartSeries"
         :options="chartOptions"
         :series="chartSeries"
         class="bg-base-200"

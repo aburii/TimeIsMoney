@@ -1,10 +1,9 @@
 <template>
-  <btn
+  <button
     v-if="sessionStore.isLoggedIn"
     @click="logout"
     class="btn btn-sm btn-primary"
-    >Logout</btn
-  >
+    >Logout</button>
 </template>
 
 <script setup lang="ts">
