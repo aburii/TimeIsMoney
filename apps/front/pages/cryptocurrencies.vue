@@ -22,7 +22,12 @@
       </div>
     </div>
     <div class="overflow-x-auto border rounded-xl border-base-300">
-      <UITable id="table" class="table" :table-data="dataTable">
+      <UITable
+        id="table"
+        class="table"
+        :table-data="dataTable"
+        :loading="tableLoading"
+      >
         <template #name="data">
           <div class="flex items-center gap-4">
             <Star />
@@ -124,13 +129,14 @@ import { useFetchAPI } from "../composables/fetch.ts";
 const currentPage = ref(1);
 const pageSize = ref(25);
 const totalRecords = ref(0);
+const tableLoading = ref(true);
 
 const dataTable = ref<UIDataTable<any>>({
   heading: [
     { key: "name", label: "Name" },
     { key: "price", label: "Price" },
     { key: "last24hCandle", label: "24h %" },
-    { key: "hourCandle", label: "Last Hour %" },
+    { key: "hourCandle", label: "1h %" },
     { key: "market_cap", label: "Market Cap" },
     { key: "volume", label: "Volume" },
   ],
@@ -153,6 +159,7 @@ const getClass = (value) => {
 };
 
 const fetchCryptoData = async () => {
+  tableLoading.value = true;
   const response = await useFetchAPI<any[]>("GET", "/cryptos/");
   if (response.ok) {
     const symbols = response.data.data.map((crypto) => crypto.symbol).join(",");
@@ -169,9 +176,10 @@ const fetchCryptoData = async () => {
         };
       });
       dataTable.value.data = combinedData;
+      tableLoading.value = false;
     }
   } else {
-    alert("Failed fetching data");
+    tableLoading.value = false;
   }
 };
 

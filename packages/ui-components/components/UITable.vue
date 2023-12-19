@@ -4,6 +4,7 @@ import type { UIDataTable } from "~/types/ui-table";
 defineProps<{
   id: string;
   tableData: UIDataTable<T>;
+  loading: bool;
 }>();
 </script>
 
@@ -16,7 +17,7 @@ defineProps<{
         </th>
       </tr>
     </thead>
-    <tbody v-if="tableData.data.length > 0">
+    <tbody v-if="tableData.data.length > 0 && !loading">
       <tr
         v-for="(data, index) in tableData.data"
         :key="`${id}-row-${index}`"
@@ -33,9 +34,14 @@ defineProps<{
         </td> -->
       </tr>
     </tbody>
-    <tbody v-else>
+    <tbody v-if="tableData.data.length <= 0 && !loading">
       <tr>
         <td colspan="99" class="text-center">Aucune données</td>
+      </tr>
+    </tbody>
+    <tbody v-if="loading">
+      <tr v-for="n in 8" class="skeleton">
+        <td colspan="99" class="h-10"></td>
       </tr>
     </tbody>
   </table>
