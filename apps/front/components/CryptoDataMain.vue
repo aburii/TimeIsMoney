@@ -269,7 +269,6 @@ const fetchHistoricalData = async () => {
   if (response.ok) {
     rawHistoryData.value = response.data.history;
     openPrice.value = rawHistoryData.value[0].open;
-    console.log(rawHistoryData.value[0].open);
     Data.value = formatDataForChartType(
       rawHistoryData.value,
       selectedChartType.value
