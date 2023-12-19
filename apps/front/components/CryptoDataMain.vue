@@ -161,19 +161,25 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, computed } from "vue";
 import { useFetchAPI } from "../composables/fetch.ts";
+import { defineProps } from "vue";
 
 const route = useRoute();
 const selectedTab = ref("charts");
 const selectedChartType = ref("line");
 const selectedChartPeriode = ref("minute");
 const rawHistoryData = ref([]);
-const cryptoData = ref([]);
 const cryptoNews = ref([]);
 const Data = ref([]);
 const chartLoading = ref(true);
 const openPrice = ref(0);
+const props = defineProps({
+  cryptoData: {
+    type: Array,
+    required: true,
+  },
+});
 
 const handleButtonClick = (tabName) => {
   selectedTab.value = tabName;
@@ -270,37 +276,26 @@ const fetchCryptoData = async () => {
   const cryptoSymbol = route.params.crypto || "BTC";
   const response = await useFetchAPI(
     "GET",
-    `/cryptos/${cryptoSymbol}/details`
+    `/cryptos/${cryptoSymbol}/articles`
   );
   if (response.ok) {
-    cryptoData.value = response.data;
-    const response2 = await useFetchAPI(
-      "GET",
-      `/cryptos/${cryptoSymbol}/articles`
-    );
-    if (response2.ok) {
-      cryptoNews.value = response2.data.pages;
-    }
+    cryptoNews.value = response.data.pages;
   } else {
     console.error("Failed to fetch crypto data", response.error);
     alert("Failed to fetch crypto data");
   }
 };
 
-onMounted(() => {
-  fetchCryptoData();
-  fetchHistoricalData();
+onMounted(async () => {
+  await fetchCryptoData();
+  await fetchHistoricalData();
 });
 
 watch(selectedChartType, (newChartType) => {
   Data.value = formatDataForChartType(rawHistoryData.value, newChartType);
 });
 
-watch(
-  selectedChartPeriode,
-  () => {
-    fetchHistoricalData();
-  },
-  { immediate: true }
-);
+watch(selectedChartPeriode, () => {
+  fetchHistoricalData();
+});
 </script>

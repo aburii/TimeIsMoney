@@ -14,9 +14,7 @@
       <h2 class="text-lg ml-2">{{ cryptoData.symbol }}</h2>
     </div>
     <div class="text-5xl flex items-center font-bold">
-      {{
-        formatNumberWithSpaces(Number(cryptoData2.currentPrice).toFixed(2))
-      }}
+      {{ formatNumberWithSpaces(Number(cryptoData2.currentPrice).toFixed(2)) }}
       €
       <div
         class="text-lg mb-4 ml-4"
@@ -45,7 +43,8 @@
     <span>Volume (24h)</span>
     <span class="font-semibold"
       >{{
-       formatLargeNumber(Number(cryptoData2.last24hCandle?.volumeCoin)) || "Loading..."
+        formatLargeNumber(Number(cryptoData2.last24hCandle?.volumeCoin)) ||
+        "Loading..."
       }}
       €</span
     >
@@ -56,10 +55,14 @@
     <span class="font-semibold">19.55M BTC</span>
   </div> -->
 
-  <div v-if="cryptoData.maxSupply > 0" class="flex justify-between items-center mb-6 mx-4">
+  <div
+    v-if="cryptoData.maxSupply > 0"
+    class="flex justify-between items-center mb-6 mx-4"
+  >
     <span>Offre max</span>
     <span class="font-semibold"
-      >{{ formatLargeNumber(Math.ceil(cryptoData.maxSupply)) }} {{ cryptoData.symbol }}</span
+      >{{ formatLargeNumber(Math.ceil(cryptoData.maxSupply)) }}
+      {{ cryptoData.symbol }}</span
     >
   </div>
 
@@ -107,11 +110,16 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useFetchAPI } from "../composables/fetch.ts";
-
+import { defineProps } from "vue";
 const route = useRoute();
 const isToggled = ref(false);
-const cryptoData = ref([]);
 const cryptoData2 = ref([]);
+const props = defineProps({
+  cryptoData: {
+    type: Array,
+    required: true,
+  },
+});
 
 function formatNumberWithSpaces(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
@@ -128,19 +136,12 @@ function formatLargeNumber(number) {
   return number.toString();
 }
 const fetchCryptoData = async () => {
-  const response = await useFetchAPI<any[]>(
+  const pricesResponse = await useFetchAPI<any>(
     "GET",
-    `/cryptos/${route.params.crypto}/details`
+    `/cryptos/${route.params.crypto}/prices`
   );
-  if (response.ok) {
-    cryptoData.value = response.data;
-    const pricesResponse = await useFetchAPI<any>(
-      "GET",
-      `/cryptos/${route.params.crypto}/prices`
-    );
-    if (pricesResponse.ok) {
-      cryptoData2.value = pricesResponse.data.EUR;
-    }
+  if (pricesResponse.ok) {
+    cryptoData2.value = pricesResponse.data.EUR;
   } else {
     alert("Failed fetching data");
   }

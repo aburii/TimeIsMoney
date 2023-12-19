@@ -100,9 +100,8 @@ const handleLoginSuccess = async (response: CredentialResponse) => {
   const res = await sessionStore.loginWithGoogle(credential);
 
   if (!res) {
-    return toast.add({ title: "Authentification went wrong!", color: "red" });
+    return alert("Authentification went wrong!");
   }
-  toast.add({ title: "Sucessfully Authenticated" });
   return navigateTo("/cryptocurrencies");
 };
 
