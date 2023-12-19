@@ -3,7 +3,7 @@ import { useSessionStore } from "~/stores/session";
 import type { ComputedRef } from "vue";
 
 definePageMeta({
-  middleware: ["guest"],
+  layout: "auth",
 });
 
 const sessionStore = useSessionStore();
@@ -82,7 +82,7 @@ const passwordInputType: ComputedRef<"password" | "text"> = computed(() => {
           </div>
 
           <UIButton
-            class="!mt-16 w-full text-center"
+            class="!mt-16 w-full text-center btn-neutral"
             label="Se connecter"
             loading-label="Connexion en cours..."
             :loading="loading"
