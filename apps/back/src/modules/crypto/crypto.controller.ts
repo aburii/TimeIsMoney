@@ -23,6 +23,7 @@ import { RequestUser } from '../../decorators/request-user.decorator';
 import { Currency } from '@prisma/client';
 import { UserService } from '../user/user.service';
 import { BoGuard } from '../../guards/bo.guard';
+import { CrudQueryObj } from 'nestjs-prisma-crud';
 
 @Controller('cryptos')
 export class CryptoController {
@@ -148,8 +149,17 @@ export class CryptoController {
   }
 
   @Get()
-  async findMany(@Query('crudQuery') crudQuery: string) {
-    return await this.cryptoService.findMany({ crudQuery });
+  async findMany(
+    @Query('crudQuery') crudQuery: string,
+    @Query('includeFiats') includeFiats: Boolean = false,
+  ) {
+    const crudQueryObj: CrudQueryObj =
+      typeof crudQuery === 'string' ? JSON.parse(crudQuery) : {};
+    if (!includeFiats)
+      crudQueryObj.where = {
+        is_crypto: true,
+      };
+    return await this.cryptoService.findMany({ crudQuery: crudQueryObj });
   }
 
   @Get(':id')
