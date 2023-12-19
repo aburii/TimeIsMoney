@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ssr: false,
 
-  modules: ["@vueuse/nuxt", "@pinia/nuxt", "@nuxt/ui"],
+  modules: ["@vueuse/nuxt", "@pinia/nuxt", "@timeismoney/ui-components/nuxt"],
 
   css: ["@/assets/scss/main.scss"],
 

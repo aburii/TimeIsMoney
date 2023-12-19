@@ -10,7 +10,6 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "@nuxt/ui": "^2.11.0",
     "@nuxt/devtools": "latest",
     "autoprefixer": "^10.4.16",
     "daisyui": "^4.4.2",
