@@ -10,7 +10,6 @@
 import type { CredentialResponse } from "vue3-google-signin";
 
 const session = useSessionStore();
-const toast = useToast();
 
 if (!session.isLoggedIn) {
   useOneTap({
@@ -20,18 +19,12 @@ if (!session.isLoggedIn) {
       const res = await session.loginWithGoogle(credential);
 
       if (!res) {
-        return toast.add({
-          title: "Authentification went wrong!",
-          color: "red",
-        });
+        return alert.alert("Authentification went wrong!");
       }
-      return toast.add({ title: "Sucessfully Authenticated" });
+      return alert.alert("Sucessfully Authenticated");
     },
     onError: () => {
-      return toast.add({
-        title: "Authentification went wrong!",
-        color: "red",
-      });
+      return alert.alert("Authentification went wrong!");
     },
     promptParentId: "googleTap",
   });

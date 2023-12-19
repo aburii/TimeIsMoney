@@ -86,7 +86,6 @@ const email = ref("");
 const password = ref("");
 
 const sessionStore = useSessionStore();
-const toast = useToast();
 const login = async () => {
   const response = await sessionStore.login({
     email: email.value,
