@@ -44,10 +44,4 @@ const props = defineProps({
 
 const isToggled = ref(false);
 const session = useSessionStore();
-
-// watch(isToggled, (newValue) => {
-//   if (newValue) {
-//   } else {    
-//   }
-// });
 </script>

@@ -28,7 +28,6 @@ const fetchCryptoData = async () => {
   if (response.ok) {
     cryptoDetails.value = response.data;
   } else {
-    console.error("Failed to fetch crypto data", response.error);
     alert("Failed to fetch crypto data");
   }
 };

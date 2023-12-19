@@ -13,7 +13,6 @@ export default defineNuxtConfig({
     "@timeismoney/ui-components/nuxt",
     "@vueuse/nuxt",
     "@pinia/nuxt",
-    "@nuxt/ui",
     "nuxt-vue3-google-signin",
     "@nuxtjs/svg-sprite",
   ],
