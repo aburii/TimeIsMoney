@@ -13,12 +13,32 @@
       </div>
       <div class="join tooltip" data-tip="Show rows">
         <button
-          class="join-item btn-xs sm:btn btn btn-active sm:btn-active h-12 sm:h-auto"
+          :class="[
+            'join-item btn-xs sm:btn btn h-12 sm:h-auto',
+            pageSize === 10 ? 'btn-active sm:btn-active' : '',
+          ]"
+          @click="changePageSize(10)"
+        >
+          10
+        </button>
+        <button
+          :class="[
+            'join-item btn-xs sm:btn btn h-12 sm:h-auto',
+            pageSize === 25 ? 'btn-active sm:btn-active' : '',
+          ]"
+          @click="changePageSize(25)"
         >
           25
         </button>
-        <button class="join-item btn-xs sm:btn btn h-12 sm:h-auto">50</button>
-        <button class="join-item btn-xs sm:btn btn h-12 sm:h-auto">100</button>
+        <button
+          :class="[
+            'join-item btn-xs sm:btn btn h-12 sm:h-auto',
+            pageSize === 50 ? 'btn-active sm:btn-active' : '',
+          ]"
+          @click="changePageSize(50)"
+        >
+          50
+        </button>
       </div>
     </div>
     <div class="overflow-x-auto border rounded-xl border-base-300">
@@ -111,24 +131,21 @@
         </template>
       </UITable>
     </div>
-    <div class="flex justify-center mt-4">
-      <div class="join">
-        <button class="join-item btn-sm btn btn-active">1</button>
-        <button class="join-item btn btn-sm">2</button>
-        <button class="join-item btn btn-sm">3</button>
-        <button class="join-item btn btn-sm">4</button>
-      </div>
-    </div>
+    <PaginationButtons
+      :currentPage="currentPage"
+      :totalPages="totalPages"
+      @changePage="changePage"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import type { UIDataTable } from "@timeismoney/ui-components/types/ui-table";
 import { useFetchAPI } from "../composables/fetch.ts";
 const currentPage = ref(1);
-const pageSize = ref(25);
-const totalRecords = ref(0);
+const pageSize = ref(10);
+const totalPages = ref(0);
 const tableLoading = ref(true);
 
 const dataTable = ref<UIDataTable<any>>({
@@ -160,8 +177,16 @@ const getClass = (value) => {
 
 const fetchCryptoData = async () => {
   tableLoading.value = true;
-  const response = await useFetchAPI<any[]>("GET", "/cryptos/");
+  const crudQuery = {
+    pageSize: pageSize.value,
+    page: currentPage.value,
+  };
+  const response = await useFetchAPI<any[]>(
+    "GET",
+    `/cryptos?crudQuery=${JSON.stringify(crudQuery)}`
+  );
   if (response.ok) {
+    totalPages.value = response.data.pageCount;
     const symbols = response.data.data.map((crypto) => crypto.symbol).join(",");
     const pricesResponse = await useFetchAPI<any>(
       "GET",
@@ -186,4 +211,14 @@ const fetchCryptoData = async () => {
 onMounted(async () => {
   fetchCryptoData();
 });
+
+const changePage = (newPage) => {
+  currentPage.value = newPage;
+  fetchCryptoData();
+};
+
+const changePageSize = (newPageSize) => {
+  pageSize.value = newPageSize;
+  fetchCryptoData();
+};
 </script>
