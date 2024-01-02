@@ -5,3 +5,9 @@ export function useGetMe() {
     return useFetchAPI<UserEntity>("GET", "bo/users/me");
   };
 }
+
+export function useGetAllUsers() {
+  return function () {
+    return useFetchAPI<UserEntity[]>("GET", "users");
+  };
+}

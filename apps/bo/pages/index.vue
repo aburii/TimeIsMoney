@@ -9,8 +9,8 @@ definePageMeta({
 const sessionStore = useSessionStore();
 const showPassword = ref(false);
 const formValue = reactive({
-  email: null,
-  password: null,
+  email: "",
+  password: "",
 });
 const formError = ref(false);
 const loading = ref(false);
@@ -20,7 +20,7 @@ const login = async () => {
   loading.value = true;
   const response = await sessionStore.login({
     ...formValue,
-    app: "BO" as any,
+    app: "BO",
   });
 
   loading.value = false;
@@ -82,6 +82,7 @@ const passwordInputType: ComputedRef<"password" | "text"> = computed(() => {
           </div>
 
           <UIButton
+            id="loginButton"
             class="!mt-16 w-full text-center btn-neutral"
             label="Se connecter"
             loading-label="Connexion en cours..."

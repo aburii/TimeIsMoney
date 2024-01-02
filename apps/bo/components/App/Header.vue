@@ -12,12 +12,10 @@
       <nav class="font-semibold mr-10">
         <ul class="flex gap-10">
           <li>
-            <NuxtLink to="/users" class="link-hover">Users</NuxtLink>
+            <NuxtLink to="/admin" class="link-hover">Users</NuxtLink>
           </li>
           <li>
-            <NuxtLink to="/cryptocurrencies" class="link-hover"
-              >Cryptos</NuxtLink
-            >
+            <NuxtLink to="/" class="link-hover">Cryptos</NuxtLink>
           </li>
         </ul>
       </nav>
