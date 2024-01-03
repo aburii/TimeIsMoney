@@ -7,7 +7,7 @@ const runtimeConfig = useRuntimeConfig();
 const ENDPOINT = `${runtimeConfig.public.BACK_URL}`;
 
 export async function useFetchAPI<T>(
-  method: "GET" | "POST" | "PUT" | "DELETE",
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
   url: string,
   body?: any,
 ): Promise<Ok<T> | Err> {
