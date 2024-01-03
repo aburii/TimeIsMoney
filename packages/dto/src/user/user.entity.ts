@@ -8,6 +8,7 @@ export class UserEntity {
   lastname: string;
   nickname: string;
   email: string;
+  role: string;
   currency?: number;
   pressKeywords: string[];
   createdAt: Date;
