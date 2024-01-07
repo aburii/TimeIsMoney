@@ -151,7 +151,7 @@ export class CryptoController {
   @Get()
   async findMany(
     @Query('crudQuery') crudQuery: string,
-    @Query('includeFiats') includeFiats: Boolean = false,
+    @Query('includeFiats') includeFiats: Boolean = true,
   ) {
     const crudQueryObj: CrudQueryObj =
       typeof crudQuery === 'string' ? JSON.parse(crudQuery) : {};
