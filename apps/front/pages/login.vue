@@ -93,10 +93,10 @@ const login = async () => {
     app: "FRONT" as any,
   });
 
-  if (!response) {
-    return toast.add({ title: "Authentification went wrong!", color: "red" });
-  }
-  toast.add({ title: "Sucessfully Authenticated" });
+  // if (!response) {
+  //   return toast.add({ title: "Authentification went wrong!", color: "red" });
+  // }
+  // toast.add({ title: "Sucessfully Authenticated" });
   return navigateTo("/cryptocurrencies");
 };
 
