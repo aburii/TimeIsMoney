@@ -42,7 +42,7 @@
           <li><NuxtLink to="/cryptocurrencies">Cryptos</NuxtLink></li>
           <li><NuxtLink to="/news">News</NuxtLink></li>
           <!-- CURRENCY SELECTOR IN HARD CODE TO BE IMPLEMENTED -->
-          <li>
+          <li  v-if="session.isLoggedIn">
             <a class="text-xs" @click="toggleCurrencySelector"
               > 
                  <div class="flex items-center justify-center w-4 h-4 text-xs rounded-full border border-current">
