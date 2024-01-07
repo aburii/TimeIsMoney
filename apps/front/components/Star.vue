@@ -1,5 +1,7 @@
 <template>
-  <div v-if="session.isLoggedIn" @click="isToggled = !isToggled">
+  <div v-if="session.isLoggedIn" @click="toggleFollow">
+     <span v-if="isLoading" class="loading loading-spinner loading-xs"></span>
+    <template v-else>
     <svg
       v-if="!isToggled"
       xmlns="http://www.w3.org/2000/svg"
@@ -28,13 +30,66 @@
         clip-rule="evenodd"
       />
     </svg>
+     </template>
   </div>
 </template>
-
-<script setup>
+<script setup lang="ts">
 import { useSessionStore } from "~/stores/session";
-import { ref } from "vue";
+import { ref, onMounted, watch } from "vue";
+import { defineProps } from 'vue'
+import { useFetchAPI } from "../composables/fetch.ts";
+
+const props = defineProps({
+  id: Number
+})
 
 const isToggled = ref(false);
+const isLoading = ref(false);
 const session = useSessionStore();
+let userId = null;
+let isUserInteraction = false;
+
+// Fetch followed cryptos on component mount
+onMounted(async () => {
+  if (session.user) {
+    userId = session.user.id;
+    isLoading.value = true;
+    const response = await useFetchAPI<any>(
+      "GET",
+      `/users/${userId}/followed`
+    );
+    isLoading.value = false;
+    if (response.ok) {
+      const followedCryptos = response.data;
+      isToggled.value = followedCryptos.some(crypto => crypto.id === props.id);
+    }
+  }
+});
+
+// Watch for changes in isToggled and follow/unfollow accordingly
+watch(isToggled, async (newVal) => {
+  if (isUserInteraction && userId) {
+    if (newVal) {
+      // Follow the crypto
+      await useFetchAPI<any>(
+        "POST",
+        `/users/${userId}/follow?cryptos=${props.id}`
+      );
+    } else {
+      // Unfollow the crypto
+      await useFetchAPI<any>(
+        "POST",
+        `/users/${userId}/unfollow?cryptos=${props.id}`
+      );
+    }
+    isUserInteraction = false;
+  }
+}, { flush: 'post' });
+
+const toggleFollow = () => {
+  if (userId) {
+    isUserInteraction = true;
+    isToggled.value = !isToggled.value;
+  }
+};
 </script>

@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { useFetchAPI } from "../../composables/fetch.ts";
+import { useFetchAPI } from "../../../composables/fetch.ts";
 const route = useRoute();
 const cryptoDetails = ref([]);
 

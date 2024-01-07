@@ -1,6 +1,6 @@
 <template>
   <div v-if="cryptoData" class="absolute top-0 right-4 p-2 text-xl">
-    <Star />
+    <Star :id="cryptoID" />
   </div>
   <!-- Content for left sidebar -->
   <div v-if="cryptoData.coinName && cryptoData2.length !== 0" class="mb-6 mx-4">
@@ -136,6 +136,7 @@ import { useFetchAPI } from "../composables/fetch.ts";
 import { defineProps } from "vue";
 
 const route = useRoute();
+const cryptoID = Number(route.params.id);
 const isToggled = ref(false);
 const cryptoData2 = ref([]);
 const props = defineProps({
@@ -144,7 +145,6 @@ const props = defineProps({
     required: true,
   },
 });
-
 function formatNumberWithSpaces(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }

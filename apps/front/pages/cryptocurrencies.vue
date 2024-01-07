@@ -50,9 +50,9 @@
       >
         <template #name="data">
           <div class="flex items-center gap-4">
-            <Star />
+            <Star :id="data.data.id" />
             <NuxtLink
-              :to="`/cryptocurrency/${data.data.symbol}`"
+              :to="`/cryptocurrency/${data.data.symbol}/${data.data.id}/`"
               class="flex items-center gap-2"
             >
               <img
