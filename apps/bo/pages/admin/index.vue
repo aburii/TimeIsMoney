@@ -79,11 +79,11 @@ const deleteUserById = async (id: number) => {
         <template #id="user">
           <NuxtLink
             role="button"
-            class="btn btn-square btn-secondary no-underline mr-2"
+            class="btn btn-square btn-ghost no-underline mr-2"
             id="detailsUser"
             :to="'/admin/' + user.data.id"
           >
-            <EyeIcon class="w-5 h-5 text-white" />
+            <EyeIcon class="w-5 h-5 text-black" />
           </NuxtLink>
           <button
             v-if="
@@ -96,6 +96,9 @@ const deleteUserById = async (id: number) => {
           >
             <TrashIcon class="w-5 h-5 text-white" />
           </button>
+          <span v-if="session.user?.id === user.data.id" class="align-super"
+            >(You)</span
+          >
         </template>
       </UITable>
     </div>

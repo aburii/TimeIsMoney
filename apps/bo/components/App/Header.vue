@@ -1,4 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const session = useSessionStore();
+
+const logout = async () => {
+  await session.logout();
+  return navigateTo("/");
+};
+</script>
 
 <template>
   <section class="top-0 w-full h-[60px] border-b">
@@ -16,6 +23,9 @@
           </li>
           <li>
             <NuxtLink to="/" class="link-hover">Cryptos</NuxtLink>
+          </li>
+          <li v-if="session.user">
+            <div class="text-sm text-red-500 link" @click="logout">Log out</div>
           </li>
         </ul>
       </nav>

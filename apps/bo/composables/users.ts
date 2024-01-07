@@ -1,8 +1,14 @@
-import { CreateUserDto, UpdateUserDto, UserEntity } from "@timeismoney/dto";
+import { CreateUserDto, UserEntity } from "@timeismoney/dto";
 
 export function useGetMe() {
   return function () {
     return useFetchAPI<UserEntity>("GET", "bo/users/me");
+  };
+}
+
+export function useGetUser() {
+  return function (id: string) {
+    return useFetchAPI<UserEntity>("GET", `users/${id}`);
   };
 }
 
@@ -19,13 +25,13 @@ export function useCreateUser() {
 }
 
 export function useUpdateUser() {
-  return function (id: number, updateUserdto: UpdateUserDto) {
+  return function (id: number, updateUserdto: Partial<UserEntity>) {
     return useFetchAPI<UserEntity>("PATCH", `users/${id}`, updateUserdto);
   };
 }
 
 export function useDeleteUser() {
-  return function (id: string) {
+  return function (id: number) {
     return useFetchAPI<void>("DELETE", `users/${id}`);
   };
 }

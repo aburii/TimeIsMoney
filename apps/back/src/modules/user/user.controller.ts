@@ -14,7 +14,7 @@ import {
   ParseArrayPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto, UpdateUserDto } from '@timeismoney/dto';
+import { CreateUserDto, UserEntity } from '@timeismoney/dto';
 import {
   UserInterceptor,
   UsersListInterceptor,
@@ -78,7 +78,7 @@ export class UserController {
   async update(
     @RequestUser() user: IRequestUser,
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateUserDto: Partial<UserEntity>,
     @Query('crudQuery') crudQuery: string,
   ) {
     const canEdit = await this.canEditUser(user, id);
