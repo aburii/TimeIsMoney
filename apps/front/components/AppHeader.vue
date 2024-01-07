@@ -75,9 +75,12 @@
           class="btn btn-sm btn-primary"
           >Login</NuxtLink
         >
-        {{ session.user?.nickname }}
+          <NuxtLink
+          v-if="session.isLoggedIn"
+          to="/user"
+          class="btn btn-sm btn-secondary"
+          >{{ session.user?.nickname }}</NuxtLink></div>
         <Logout class="ml-2" />
-      </div>
     </div>
   </header>
   <currencySelector
