@@ -1,4 +1,4 @@
-import { CreateUserDto, UserEntity } from "@timeismoney/dto";
+import { signUpDto, UserEntity } from "@timeismoney/dto";
 
 export function useGetMe() {
   return function () {
@@ -19,8 +19,8 @@ export function useGetAllUsers() {
 }
 
 export function useCreateUser() {
-  return function (createUserdto: CreateUserDto) {
-    return useFetchAPI<UserEntity>("POST", "users", createUserdto);
+  return function (createUserdto: signUpDto) {
+    return useFetchAPI<UserEntity>("POST", "auth/register", createUserdto);
   };
 }
 

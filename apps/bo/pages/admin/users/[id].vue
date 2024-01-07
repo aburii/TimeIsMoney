@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { UserEntity } from "@timeismoney/dto/src/user/user.entity";
-
 definePageMeta({
   middleware: ["auth"],
 });
@@ -10,7 +8,7 @@ const route = useRoute();
 
 const getUser = useGetUser();
 const loading = ref(false);
-const user = ref<UserEntity>();
+const user = ref<any>();
 
 const fetchUser = async () => {
   const id = route.params.id;
@@ -35,7 +33,7 @@ onMounted(async () => {
   formValue.lastname = user.value?.lastname;
 });
 
-const formValue = reactive<Partial<UserEntity>>({});
+const formValue = reactive<Partial<any>>({});
 
 const submit = async () => {
   loading.value = true;
@@ -61,7 +59,7 @@ const submit = async () => {
       <form class="w-full space-y-3" @submit.prevent="submit">
         <label class="form-control w-full">
           <span class="label block">
-            <span class="label-text font-bold">nickname</span>
+            <span class="label-text font-bold">Nickname</span>
           </span>
           <input
             type="text"
@@ -79,7 +77,7 @@ const submit = async () => {
             <input
               type="text"
               v-model="formValue.firstname"
-              placeholder="email@timeismoney.com"
+              placeholder="John"
               class="input input-bordered w-full"
             />
           </label>
@@ -91,7 +89,7 @@ const submit = async () => {
             <input
               type="text"
               v-model="formValue.lastname"
-              placeholder="email@timeismoney.com"
+              placeholder="Doe"
               class="input input-bordered w-full"
             />
           </label>
@@ -113,8 +111,8 @@ const submit = async () => {
           v-if="session.user?.id === user.id || session.user?.role === 'ADMIN'"
           id="loginButton"
           class="!mt-16 w-full text-center text-white btn-primary"
-          label="Éditer"
-          loading-label="Chargement"
+          label="Edit"
+          loading-label="Loading"
           :loading="loading"
           type="submit"
         />

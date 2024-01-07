@@ -47,7 +47,7 @@ const passwordInputType: ComputedRef<"password" | "text"> = computed(() => {
         <form class="w-full space-y-3" @submit.prevent="login">
           <label class="form-control w-full">
             <span class="label block">
-              <span class="label-text font-bold">Identifiant</span>
+              <span class="label-text font-bold">Email</span>
             </span>
             <input
               type="text"
@@ -75,17 +75,15 @@ const passwordInputType: ComputedRef<"password" | "text"> = computed(() => {
                 v-model="showPassword"
                 class="checkbox checkbox-sm align-middle"
               />
-              <span class="label-text align-middle">
-                Afficher le mot de passe
-              </span>
+              <span class="label-text align-middle"> Show password </span>
             </label>
           </div>
 
           <UIButton
             id="loginButton"
             class="!mt-16 w-full text-center btn-neutral"
-            label="Se connecter"
-            loading-label="Connexion en cours..."
+            label="Log in"
+            loading-label="Login in..."
             :loading="loading"
             type="submit"
           />
