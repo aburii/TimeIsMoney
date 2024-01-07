@@ -34,16 +34,32 @@
               placeholder="name@email.com"
               class="flex items-center w-full px-5 py-4 text-sm font-medium outline-none focus:bg-grey-400 mb-5 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
             />
-            <label for="password" class="mb-2 text-sm text-start text-grey-900"
-              >Password*</label
-            >
-            <input
-              id="password"
-              v-model="password"
-              type="password"
-              placeholder="Enter a password"
-              class="flex items-center w-full px-5 py-4 mb-5 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
-            />
+             <label for="password" class="mb-2 text-sm text-start text-grey-900">Password*</label>
+              <div class="relative">
+                <input
+                  v-if="passwordVisible"
+                  id="password"
+                  v-model="password"
+                  type="text"
+                  placeholder="Enter a password"
+                  class="flex items-center w-full px-5 py-4 mb-5 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
+                />
+                <input
+                  v-else
+                  id="password"
+                  v-model="password"
+                  type="password"
+                  placeholder="Enter a password"
+                  class="flex items-center w-full px-5 py-4 mb-5 text-sm font-medium outline-none focus:bg-grey-400 placeholder:text-grey-700 bg-grey-200 text-dark-grey-900 rounded-2xl"
+                />
+                <button
+                  type="button"
+                  @click="passwordVisible = !passwordVisible"
+                  class="absolute right-3 top-1/2 transform -translate-y-1/2"
+                >
+                 <img class="w-8 h-8 mb-4" :src="passwordVisible ? 'https://www.svgrepo.com/show/506195/eye-open.svg' : 'https://www.svgrepo.com/show/325174/eye-close.svg'" />
+                </button>
+              </div>
             <button
               class="btn btn-primary w-full px-6 my-5 text-sm font-bold text-grey-900 md:w-96 rounded-2xl"
             >
@@ -84,7 +100,7 @@ definePageMeta({
 
 const email = ref("");
 const password = ref("");
-
+const passwordVisible = ref(false);
 const sessionStore = useSessionStore();
 const login = async () => {
   const response = await sessionStore.login({
