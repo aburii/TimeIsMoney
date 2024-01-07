@@ -68,10 +68,10 @@
         <template #price="data">
           <span class="font-bold">
             {{
-              data.data.price && data.data.price.EUR
+              data.data.price && Object.keys(data.data.price)[0]
                 ? formatNumberWithSpaces(
-                    data.data.price.EUR.currentPrice.toFixed(2)
-                  ) + "€"
+                    data.data.price[Object.keys(data.data.price)[0]].currentPrice.toFixed(2)
+                    ) + fiatSymbol
                 : "N/A"
             }}
           </span>
@@ -80,15 +80,15 @@
           <span
             :class="
               getClass(
-                data.data.price && data.data.price.EUR
-                  ? data.data.price.EUR.last24hCandle.changePercent
+                data.data.price && Object.keys(data.data.price)[0]
+                  ? data.data.price[Object.keys(data.data.price)[0]].last24hCandle.changePercent
                   : 0
               )
             "
           >
             {{
-              data.data.price && data.data.price.EUR
-                ? data.data.price.EUR.last24hCandle.changePercent.toFixed(2) +
+              data.data.price && Object.keys(data.data.price)[0]
+                ? data.data.price[Object.keys(data.data.price)[0]].last24hCandle.changePercent.toFixed(2) +
                   "%"
                 : "N/A"
             }}
@@ -98,34 +98,34 @@
           <span
             :class="
               getClass(
-                data.data.price && data.data.price.EUR
-                  ? data.data.price.EUR.hourCandle.changePercent
+                data.data.price && Object.keys(data.data.price)[0]
+                  ? data.data.price[Object.keys(data.data.price)[0]].hourCandle.changePercent
                   : 0
               )
             "
           >
             {{
-              data.data.price && data.data.price.EUR
-                ? data.data.price.EUR.hourCandle.changePercent.toFixed(2) + "%"
+              data.data.price && Object.keys(data.data.price)[0]
+                ? data.data.price[Object.keys(data.data.price)[0]].hourCandle.changePercent.toFixed(2) + "%"
                 : "N/A"
             }}
           </span>
         </template>
         <template #market_cap="data">
           {{
-            data.data.price && data.data.price.EUR
+            data.data.price && Object.keys(data.data.price)[0]
               ? formatNumberWithSpaces(
-                  data.data.price.EUR.marketCap.toFixed(2)
-                ) + "€"
+                  data.data.price[Object.keys(data.data.price)[0]].marketCap.toFixed(2)
+                ) + fiatSymbol
               : "N/A"
           }}
         </template>
         <template #volume="data">
           {{
-            data.data.price && data.data.price.EUR
+            data.data.price && Object.keys(data.data.price)[0]
               ? formatNumberWithSpaces(
-                  data.data.price.EUR.totalVolume.toFixed(2)
-                ) + "€"
+                  data.data.price[Object.keys(data.data.price)[0]].totalVolume.toFixed(2)
+                ) + fiatSymbol
               : "N/A"
           }}
         </template>
@@ -147,7 +147,7 @@ const currentPage = ref(1);
 const pageSize = ref(10);
 const totalPages = ref(0);
 const tableLoading = ref(true);
-
+const fiatSymbol = computed(() => localStorage.getItem('fiatSymbol') || '€');
 const dataTable = ref<UIDataTable<any>>({
   heading: [
     { key: "name", label: "Name" },
@@ -194,12 +194,14 @@ const fetchCryptoData = async () => {
     );
     if (pricesResponse.ok) {
       const pricesData = pricesResponse.data;
-      const combinedData = response.data.data.map((crypto) => {
-        return {
-          ...crypto,
-          price: pricesData[crypto.symbol],
-        };
-      });
+      const combinedData = response.data.data
+        .filter((crypto) => crypto.is_crypto)
+        .map((crypto) => {
+          return {
+            ...crypto,
+            price: pricesData[crypto.symbol],
+          };
+        });
       dataTable.value.data = combinedData;
       tableLoading.value = false;
     }
@@ -209,7 +211,7 @@ const fetchCryptoData = async () => {
 };
 
 onMounted(async () => {
-  fetchCryptoData();
+  await fetchCryptoData();
 });
 
 const changePage = (newPage) => {

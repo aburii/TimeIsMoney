@@ -15,7 +15,7 @@
     </div>
     <div class="text-4xl flex items-center font-bold">
       {{ formatNumberWithSpaces(Number(cryptoData2.currentPrice).toFixed(2)) }}
-      €
+      {{ fiatSymbol }}
       <div
         class="text-lg mb-4 ml-4"
         :class="{
@@ -38,7 +38,7 @@
   >
     <span>Market Cap</span>
     <span class="font-semibold"
-      >{{ formatLargeNumber(Number(cryptoData2.marketCap)) }} €
+      >{{ formatLargeNumber(Number(cryptoData2.marketCap)) }} {{ fiatSymbol }}
     </span>
   </div>
 
@@ -57,7 +57,7 @@
         formatLargeNumber(Number(cryptoData2.last24hCandle?.volumeCoin)) ||
         "Loading..."
       }}
-      €</span
+      {{ fiatSymbol }}</span
     >
   </div>
 
@@ -131,7 +131,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useFetchAPI } from "../composables/fetch.ts";
 import { defineProps } from "vue";
 
@@ -139,6 +139,7 @@ const route = useRoute();
 const cryptoID = Number(route.params.id);
 const isToggled = ref(false);
 const cryptoData2 = ref([]);
+let fiatSymbol = ref(localStorage.getItem('fiatSymbol') || '€');
 const props = defineProps({
   cryptoData: {
     type: Object,
@@ -160,12 +161,12 @@ function formatLargeNumber(number) {
   return number.toString();
 }
 const fetchCryptoData = async () => {
-  const pricesResponse = await useFetchAPI<any>(
-    "GET",
-    `/cryptos/${route.params.crypto}/prices`
-  );
-  if (pricesResponse.ok) {
-    cryptoData2.value = pricesResponse.data.EUR;
+  const crypto = route.params.crypto.toString();
+  const { ok, data } = await useFetchAPI<any>("GET", `/cryptos/prices?symbols=${crypto}`);
+  
+  if (ok) {
+    const keys = Object.keys(data[crypto]);
+    cryptoData2.value = data[crypto][keys[0]];
   } else {
     alert("Failed fetching data");
   }
@@ -173,5 +174,9 @@ const fetchCryptoData = async () => {
 
 onMounted(async () => {
   fetchCryptoData();
+});
+
+watch(fiatSymbol, (newSymbol) => {
+  localStorage.setItem('fiatSymbol', newSymbol);
 });
 </script>

@@ -6,6 +6,9 @@ export const useSessionStore = defineStore("session", () => {
     serializer: StorageSerializers.object,
   });
 
+  const fiatSymbol = useLocalStorage<string>("fiatSymbol", '€', {
+    serializer: StorageSerializers.string,
+  });
   const isLoggedIn = computed(() => user.value != null);
   const isRefreshing = ref<boolean>(false);
 

@@ -10,65 +10,79 @@
         &times;
       </button>
       <h3 class="font-bold text-3xl mb-3">Choose your currency:</h3>
-      <input
+      <!-- <input
         type="text"
         placeholder="Search Currency"
         class="input-sm rounded-lg mb-6 w-full"
-      />
+      /> -->
       <div class="grid grid-cols-4 gap-4">
-        <button class="btn btn-primary rounded-xl flex p-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M14.121 7.629A3 3 0 009.017 9.43c-.023.212-.002.425.028.636l.506 3.541a4.5 4.5 0 01-.43 2.65L9 16.5l1.539-.513a2.25 2.25 0 011.422 0l.655.218a2.25 2.25 0 001.718-.122L15 15.75M8.25 12H12m9 0a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          GDB
-        </button>
-        <button class="btn btn-primary rounded-xl flex p-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          DOLLAR
-        </button>
-        <button class="btn btn-primary rounded-xl flex p-2">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M9 7.5l3 4.5m0 0l3-4.5M12 12v5.25M15 12H9m6 3H9m12-3a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-
-          YEN
-        </button>
+         <button
+          v-if="!loading"
+      v-for="currency in currencies"
+      :key="currency.id"
+      class="btn btn-primary rounded-xl flex p-2"
+      @click="selectCurrency(currency.id, currency.symbol)"
+    >
+      <div class="flex items-center justify-center w-6 h-6 rounded-full border border-current">
+        {{ getSymbolFromCurrency(currency.symbol) }}
+      </div>
+      {{ currency.name }}
+      <span v-if="patchLoading && patchCurrencyId === currency.id" class="loading loading-spinner loading-md"></span>
+    </button>
+    <button v-for="i in 4" :key="i" class="btn btn-primary rounded-xl flex p-2 w-100" v-else >
+       <span class="loading loading-spinner loading-md"></span>
+    </button>
       </div>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref, onMounted, defineEmits } from "vue";
+import { useSessionStore } from "~/stores/session";
+import getSymbolFromCurrency from 'currency-symbol-map'
+import { useFetchAPI } from "../composables/fetch.ts";
+const selectedCurrency = ref(localStorage.getItem('fiatSymbol') || 'Euro');
+const loading = ref(false);
+const patchLoading = ref(false);
+const patchCurrencyId = ref(null);
+const session = useSessionStore();
+const currencies = ref([]);
+const crudQuery = {
+  pageSize: 10000,
+  page: 1,
+};
+const emits = defineEmits(['selectedCurrency', 'close']);
+let userId = session.user.id;;
+const selectCurrency = async (currencyId: string, currencySymbol: string,) => {
+  patchCurrencyId.value = currencyId;
+  patchLoading.value = true;
+  const response = await useFetchAPI<any>(
+    "PATCH",
+    `/users/${userId}`,
+    { currencyId }
+  );
+  if (response.ok) {
+    const symbol = getSymbolFromCurrency(currencySymbol);
+    localStorage.setItem('fiatSymbol', symbol);
+    emits('selectedCurrency', { symbol: symbol});
+    patchLoading.value = false;
+    patchCurrencyId.value = null;
+    emits('close');
+    window.location.reload();
+  } else {
+    // handle error
+  }
+};
+onMounted(async () => {
+  loading.value = true;
+  const response = await useFetchAPI<any[]>(
+    "GET",
+    `/cryptos?crudQuery=${JSON.stringify(crudQuery)}`
+  );
+  if (response.ok) {
+    currencies.value = response.data.data.filter(currency => !currency.is_crypto);
+  }
+  loading.value = false;
+});
+</script>
