@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -45,7 +46,10 @@ export class BoCryptoController {
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string, @Query('crudQuery') crudQuery: string) {
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('crudQuery') crudQuery: string,
+  ) {
     return this.cryptoService.remove(id, { crudQuery });
   }
 }

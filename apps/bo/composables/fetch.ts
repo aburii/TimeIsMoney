@@ -27,7 +27,7 @@ export async function useFetchAPI<T>(
     if (session.isRefreshing) {
       return { ok: false, status: response.status };
     }
-    if (response.status === 401) {
+    if (response.status === 401 && url.endsWith("/me")) {
       const success = await session.refreshSession();
 
       if (!success) {

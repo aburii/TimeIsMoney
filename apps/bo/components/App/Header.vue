@@ -22,7 +22,7 @@ const logout = async () => {
             <NuxtLink to="/admin/users" class="link-hover">Users</NuxtLink>
           </li>
           <li>
-            <NuxtLink to="/" class="link-hover">Cryptos</NuxtLink>
+            <NuxtLink to="/admin/cryptos" class="link-hover">Cryptos</NuxtLink>
           </li>
           <li v-if="session.user">
             <div class="text-sm text-red-500 link" @click="logout">Log out</div>
